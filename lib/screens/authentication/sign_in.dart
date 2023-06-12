@@ -1,6 +1,8 @@
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:umddating/services/auth.dart';
+
+
+import '../../services/auth.dart';
 
 class SignIn extends StatefulWidget {
  // const SignIn({Key? key}) : super(key: key);
