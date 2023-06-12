@@ -1,6 +1,6 @@
 # umd_match
 
-The Holy Grail for Single Terps
+## The Holy Grail for Single Terps
 
 ## Getting Started
 
