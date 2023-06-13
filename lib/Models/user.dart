@@ -1,1 +1,4 @@
-// TODO Implement this library.
+class FbUser{
+  final String name;
+  FbUser({required this.name});
+}
