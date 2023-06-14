@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'auth.dart';
+import 'email_verification_page.dart';
 
 class Register extends StatefulWidget {
 
@@ -256,26 +257,20 @@ class _RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold( /*TODO validate scaffold */
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+          child: Form(
+            key: formKey,
+
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextFormField(
                 //controller: _emailController,
-                validator: (val) {
-                  if(val!.isEmpty) {
-                    return "Enter an email address";
-                  }
-                  if(!val.endsWith("terpmail.umd.edu")) {
-                    return "Email address must be a terpmail email address.";
-                  }
-                  return null;
 
-                },
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -300,7 +295,16 @@ class _RegisterState extends State<Register> {
                   contentPadding:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
                 ),
-                onChanged: (val) {
+                validator: (val) {
+                  if(val!.isEmpty) {
+                    return "Enter an email address";
+                  }
+                  if(!val.endsWith("terpmail.umd.edu")) {
+                    return "Email address must be a terpmail email address.";
+                  }
+                  return null;
+
+                },onChanged: (val) {
                   setState(() => email = val);
                 },
               ),
@@ -339,10 +343,18 @@ class _RegisterState extends State<Register> {
               ),
               const SizedBox(height: 20,),
               _isLoading ? const CircularProgressIndicator() : ElevatedButton(onPressed: ()async{
-                setState(() {
-                  _isLoading = true;
-                });
-                await _auth.signUp(email, password, context);
+                if(formKey.currentState!.validate()) {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                }
+                //if(formKey.currentState!.validate()) {
+                  /*dynamic result = */ await _auth.signUp(email, password, context);
+
+                  //if(result == null) {
+                  //  setState(() => error = 'Please supply a valid email');
+                  //}
+                //}
                 if( FirebaseAuth.instance.currentUser != null){
                   Navigator.push(context, MaterialPageRoute(builder: (ctx)=>const EmailVerificationScreen()));
                 }
@@ -352,7 +364,8 @@ class _RegisterState extends State<Register> {
               }, child: const Text('Sign Up'))
             ],
           ),
-        ),
+       ),
+     ),
       ),
     );
   }

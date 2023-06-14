@@ -39,11 +39,13 @@ class AuthService {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The password provided is too weak.')));
       } else if (e.code == 'email-already-in-use') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('The account already exists for that email.')));
+      } else{
+        print(e.toString());
       }
       return null;
     }
     catch(e) {
-      debugPrint(e.toString());
+      print(e.toString());
       return null;
     }
   }
