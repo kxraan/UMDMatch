@@ -27,7 +27,7 @@ class _RegisterState extends State<Register> {
   final AuthService _auth = AuthService();
   final formKey = GlobalKey<FormState>();
   String email = '';
-  String password = '';
+  String password = 'begbeb1';
   String error = '';
   String name = '';
   String age = '';
@@ -39,11 +39,11 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white70,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text("UMD Dating App"),
           centerTitle: true,
-          backgroundColor: Colors.redAccent,
+          backgroundColor: Colors.red,
           actions: [
             TextButton.icon(
                 onPressed:(){
@@ -79,7 +79,7 @@ class _RegisterState extends State<Register> {
                     setState(() => email = val);
                   },
                 ),
-                SizedBox(height: 20),
+               /* SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Password",
@@ -89,8 +89,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (val) {
                     setState(() => password = val);
                   },
-                ),
-                SizedBox(height: 20),
+                ),*/
+              /*  SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Name",
@@ -104,8 +104,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => name = value);
                   },
-                ),
-                SizedBox(height: 20),
+                ),*/
+               /* SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Age",
@@ -119,8 +119,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => age = value);
                   },
-                ),
-                SizedBox(height: 20),
+                ),*/
+               /* SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Sex",
@@ -135,8 +135,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => sex = value);
                   },
-                ),
-                TextFormField(
+                ),*/
+                /*TextFormField(
                   decoration: InputDecoration(
                     labelText: "Gender Preferences",
                   ),
@@ -150,8 +150,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => genderpref = value);
                   },
-                ),
-                TextFormField(
+                ),*/
+               /* TextFormField(
                   decoration: InputDecoration(
                     labelText: "Major",
                   ),
@@ -165,8 +165,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => major = value);
                   },
-                ),
-                SizedBox(height: 20),
+                ),*/
+               /* SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Hobbies and Interests",
@@ -181,8 +181,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => hobbies = value);
                   },
-                ),
-                TextFormField(
+                ),*/
+               /* TextFormField(
                   decoration: InputDecoration(
                     labelText: " Apartment/Residence Hall ",
                   ),
@@ -196,8 +196,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => location = value);
                   },
-                ),
-                SizedBox(height: 20),
+                )*/
+             /*   SizedBox(height: 20),*/
                 ElevatedButton(
                     onPressed: () async {
                       if(formKey.currentState!.validate()) {
@@ -213,11 +213,11 @@ class _RegisterState extends State<Register> {
                     )
 
                 ),
-                SizedBox(height: 20),
-                Text(
+               /* SizedBox(height: 20),*/
+                /*Text(
                   error,
                   style: TextStyle(color: Colors.red, fontSize: 14.0),
-                )
+                )*/
 
               ],
             ),
