@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'Models/user.dart';
 import 'screens/wrapper.dart';
-import 'services/auth.dart';
+import 'screens/authentication/auth.dart';
 //void main() => runApp(const MyApp());
 void main() async{
 

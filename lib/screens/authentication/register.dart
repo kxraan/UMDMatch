@@ -1,7 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../services/auth.dart';
+import 'auth.dart';
 
 class Register extends StatefulWidget {
 
@@ -15,6 +16,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  bool _isLoading = false;
   final picker = ImagePicker();
   PickedFile image = PickedFile("");
   Future getimage() async {
@@ -36,7 +38,7 @@ class _RegisterState extends State<Register> {
   String genderpref = '';
   String hobbies = '';
   String location = '';
-  @override
+ /* @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
@@ -79,7 +81,7 @@ class _RegisterState extends State<Register> {
                     setState(() => email = val);
                   },
                 ),
-               /* SizedBox(height: 20),
+               *//* SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Password",
@@ -89,8 +91,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (val) {
                     setState(() => password = val);
                   },
-                ),*/
-              /*  SizedBox(height: 20),
+                ),*//*
+              *//*  SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Name",
@@ -104,8 +106,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => name = value);
                   },
-                ),*/
-               /* SizedBox(height: 20),
+                ),*//*
+               *//* SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Age",
@@ -119,8 +121,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => age = value);
                   },
-                ),*/
-               /* SizedBox(height: 20),
+                ),*//*
+               *//* SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Sex",
@@ -135,8 +137,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => sex = value);
                   },
-                ),*/
-                /*TextFormField(
+                ),*//*
+                *//*TextFormField(
                   decoration: InputDecoration(
                     labelText: "Gender Preferences",
                   ),
@@ -150,8 +152,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => genderpref = value);
                   },
-                ),*/
-               /* TextFormField(
+                ),*//*
+               *//* TextFormField(
                   decoration: InputDecoration(
                     labelText: "Major",
                   ),
@@ -165,8 +167,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => major = value);
                   },
-                ),*/
-               /* SizedBox(height: 20),
+                ),*//*
+               *//* SizedBox(height: 20),
                 TextFormField(
                   decoration: InputDecoration(
                     labelText: "Hobbies and Interests",
@@ -181,8 +183,8 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => hobbies = value);
                   },
-                ),*/
-               /* TextFormField(
+                ),*//*
+               *//* TextFormField(
                   decoration: InputDecoration(
                     labelText: " Apartment/Residence Hall ",
                   ),
@@ -196,12 +198,12 @@ class _RegisterState extends State<Register> {
                   onChanged: (value) {
                     setState(() => location = value);
                   },
-                )*/
-             /*   SizedBox(height: 20),*/
+                )*//*
+             *//*   SizedBox(height: 20),*//*
                 ElevatedButton(
                     onPressed: () async {
                       if(formKey.currentState!.validate()) {
-                        dynamic result = await _auth.register(email, password);
+                        dynamic result = await _auth.sign_up(email, password);
                         if(result == null) {
                           setState(() => error = 'Please supply a valid email');
                         }
@@ -213,16 +215,16 @@ class _RegisterState extends State<Register> {
                     )
 
                 ),
-               /* SizedBox(height: 20),*/
-                /*Text(
+               *//* SizedBox(height: 20),*//*
+                *//*Text(
                   error,
                   style: TextStyle(color: Colors.red, fontSize: 14.0),
-                )*/
+                )*//*
 
               ],
             ),
           ),
-          /*ElevatedButton(
+          *//*ElevatedButton(
               onPressed: () {
               },
               child:ElevatedButton.icon(
@@ -236,21 +238,126 @@ class _RegisterState extends State<Register> {
                 // style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
               )
 
-          ),*/
+          ),*//*
 
-          /*ElevatedButton(
+          *//*ElevatedButton(
             onPressed: () {  },
             icon: Icon(
               Icons.
             )
 
-          )*/
+          )*//*
 
 
         )
     );
 
+  }*/
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextFormField(
+                //controller: _emailController,
+                validator: (val) {
+                  if(val!.isEmpty) {
+                    return "Enter an email address";
+                  }
+                  if(!val.endsWith("terpmail.umd.edu")) {
+                    return "Email address must be a terpmail email address.";
+                  }
+                  return null;
+
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                    const BorderSide(color: Colors.grey, width: 1),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                    const BorderSide(color: Colors.grey, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                    const BorderSide(color: Colors.grey, width: 1),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Enter Email',
+                  // hintStyle: AppTextStyle.lightGreyText,
+                  isDense: true,
+                  contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                ),
+                onChanged: (val) {
+                  setState(() => email = val);
+                },
+              ),
+              const SizedBox(height: 20,),
+              TextFormField(
+                //controller: _passwordController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                    const BorderSide(color: Colors.grey, width: 1),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                    const BorderSide(color: Colors.grey, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                    const BorderSide(color: Colors.grey, width: 1),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: 'Enter Password',
+                  // hintStyle: AppTextStyle.lightGreyText,
+                  isDense: true,
+                  contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+                ),
+                obscureText: true,
+                validator: (val) => val!.length < 6 ? 'Enter a password with more than 6 characters' : null,
+                onChanged: (val) {
+                  setState(() => password = val);
+                },
+              ),
+              const SizedBox(height: 20,),
+              _isLoading ? const CircularProgressIndicator() : ElevatedButton(onPressed: ()async{
+                setState(() {
+                  _isLoading = true;
+                });
+                await _auth.signUp(email, password, context);
+                if( FirebaseAuth.instance.currentUser != null){
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx)=>const EmailVerificationScreen()));
+                }
+                setState(() {
+                  _isLoading = false;
+                });
+              }, child: const Text('Sign Up'))
+            ],
+          ),
+        ),
+      ),
+    );
   }
+
+
   Widget imageProfile() {
     return Stack(
       children: [

@@ -2,7 +2,7 @@ import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 
 
-import '../../services/auth.dart';
+import 'auth.dart';
 
 
 
