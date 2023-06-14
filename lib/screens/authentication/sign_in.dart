@@ -2,7 +2,7 @@ import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 
 
-import '../../services/auth.dart';
+import 'auth.dart';
 
 
 
@@ -64,7 +64,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white70,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text("UMD MATCH"),
           centerTitle: true,
@@ -115,7 +115,7 @@ class _SignInState extends State<SignIn> {
                   },
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
+                /*ElevatedButton(
                     onPressed: () async{
 
                     },
@@ -129,7 +129,7 @@ class _SignInState extends State<SignIn> {
                       ),
 
 
-                ),
+                ),*/
                 ElevatedButton(
                     onPressed: () async {
 
