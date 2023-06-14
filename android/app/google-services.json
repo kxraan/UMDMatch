@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "301212487171",
+    "project_id": "umd-match",
+    "storage_bucket": "umd-match.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:301212487171:android:09eadf4f2aa2ddc5840836",
+        "android_client_info": {
+          "package_name": "com.example.umd_match"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "301212487171-pjcrca5d43bloqparkuv1r3tt3vvk26f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh-V6RwS68hdLHjru_7vS3FVA0qNmRx3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "301212487171-pjcrca5d43bloqparkuv1r3tt3vvk26f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "301212487171-58sll5a478jp5ni7lf5pdc30c96gi0rk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.umdMatch"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

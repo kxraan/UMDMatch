@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:umddating/screens/authentication/sign_in.dart';
-import 'package:umddating/screens/authentication/register.dart';
+
+import 'register.dart';
+import 'sign_in.dart';
 class Authenticate extends StatefulWidget {
   const Authenticate({Key? key}) : super(key: key);
 

@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:umddating/Models/user.dart';
-import 'package:umddating/services/database.dart';
-class AuthService {
 
+import '../Models/user.dart';
+
+
+class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   FbUser?  _userFromFirebaseUser(User? user) {
     return user != null ? FbUser(name: user.uid) : null;

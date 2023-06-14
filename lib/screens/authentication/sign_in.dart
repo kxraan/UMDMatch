@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../../services/auth.dart';
 
+
+
 class SignIn extends StatefulWidget {
  // const SignIn({Key? key}) : super(key: key);
   final Function toggleView;
@@ -27,12 +29,13 @@ class _SignInState extends State<SignIn> {
   EmailAuth emailAuth = new EmailAuth(
     sessionName: "Sample session",
   );
+
   @override
-  void initState() {
+ /* void initState() {
     super.initState();
     emailAuth.config(remoteServerConfiguration);
 
-  }
+  }*/
 
 
 

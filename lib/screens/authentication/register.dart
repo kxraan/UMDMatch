@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:umddating/screens/Home/home.dart';
-import 'package:umddating/services/auth.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../services/auth.dart';
 
 class Register extends StatefulWidget {
 
@@ -69,8 +69,8 @@ class _RegisterState extends State<Register> {
                       if(val!.isEmpty) {
                         return "Enter an email address";
                       }
-                      if(!val.endsWith("umd.edu")) {
-                        return "Email address must be a UMD email address.";
+                      if(!val.endsWith("terpmail.umd.edu")) {
+                        return "Email address must be a terpmail email address.";
                       }
                       return null;
 
