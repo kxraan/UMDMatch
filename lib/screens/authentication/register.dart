@@ -258,15 +258,30 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold( /*TODO validate scaffold */
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("UMD Dating App"),
+        centerTitle: true,
+        backgroundColor: Colors.red,
+        actions: [
+          TextButton.icon(
+            onPressed:(){
+              widget.toggleView();
+            } ,
+            icon: Icon(Icons.person),
+            label: Text("Sign In"),
+          )
+        ],
+      ),
       body: Center(
       child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18),
+      padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 18),
           child: Form(
             key: formKey,
 
           child: Column(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextFormField(
                 //controller: _emailController,
@@ -342,7 +357,11 @@ class _RegisterState extends State<Register> {
                 },
               ),
               const SizedBox(height: 20,),
-              _isLoading ? const CircularProgressIndicator() : ElevatedButton(onPressed: ()async{
+              _isLoading ? const CircularProgressIndicator() : ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.red, // Background color
+                  ),
+                  onPressed: ()async{
                 if(formKey.currentState!.validate()) {
                   setState(() {
                     _isLoading = true;
