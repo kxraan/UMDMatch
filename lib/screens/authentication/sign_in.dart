@@ -13,58 +13,17 @@ import 'email_verification_page.dart';
 
 class SignIn extends StatefulWidget {
  // const SignIn({Key? key}) : super(key: key);
-  final Function toggleView;
-  SignIn({required this.toggleView});
+/*  final Function toggleView;
+  SignIn({required this.toggleView});*/
   @override
   State<SignIn> createState() => _SignInState();
 }
 
-
 class _SignInState extends State<SignIn> {
-  bool _isLoading = false;
 
   final AuthService _auth = AuthService();
   final formKey = GlobalKey<FormState>();
- // String error = '';
   String email = '';
- // String password = '';
-  //final TextEditingController _emailController = TextEditingController();
-  //final TextEditingController _otpController = TextEditingController();
-
-
-  /*EmailAuth emailAuth = new EmailAuth(
-    sessionName: "Sample session",
-  );*/
-
- /* void initState() {
-    super.initState();
-    emailAuth.config(remoteServerConfiguration);
-
-  }*/
-
-
-/*
-  void sendOtp() async {
-    var result = await emailAuth.sendOtp(
-        recipientMail: _emailController.text, otpLength: 5
-    );
-    if(result) {
-      print("OTP Sent");
-    }else {
-      print("OTP was not sent");
-    }
-  }*/
- /* void verifyOtp() async {
-    var res = emailAuth.validateOtp(
-        recipientMail: _emailController.text,
-        userOtp: _otpController.value.text);
-    if(res) {
-      print("Verified");
-    }else {
-      print("INVALID OTP");
-    }
-  }*/
-
 
   @override
   Widget build(BuildContext context) {
