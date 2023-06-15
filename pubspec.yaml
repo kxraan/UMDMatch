@@ -34,8 +34,11 @@ dependencies:
   cloud_firestore: ^4.3.1
   firebase_core : ^2.13.1
   firebase_auth: ^4.6.2
+  google_sign_in: ^5.0.0
+  font_awesome_flutter: ^9.0.0
   provider: ^6.0.5
   image_picker: ^0.8.6+1
+  flutter_signin_button:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -64,8 +67,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
- #assets:
-  #  - assets/profile_img.png
+  assets:
+    - assets/images/google_logo.png
+   #/profile_img.png
    # - assets/avatar-1.jpg
     #- assets/avatar-2.jpg
   #   - images/a_dot_burr.jpeg
