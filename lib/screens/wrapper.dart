@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lib/screens/authentication/register.dart';
 import 'package:provider/provider.dart';
 
 import '../Home/home.dart';
@@ -10,10 +12,16 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<FbUser?>(context);
+
     if(user == null) {
       return Authenticate();
     } else {
-      return Home();
+      if(FirebaseAuth.instance.currentUser!.email!.endsWith('terpmail.umd.edu')){
+        return Home();
+      }else{
+        FirebaseAuth.instance.currentUser!.delete();
+        return Authenticate();
+      }
     }
 
   }

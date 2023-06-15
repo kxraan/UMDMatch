@@ -1,8 +1,13 @@
 import 'package:email_auth/email_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_builder.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/button_view.dart';
 
 
 import 'auth.dart';
+import 'email_verification_page.dart';
 
 
 
@@ -16,21 +21,21 @@ class SignIn extends StatefulWidget {
 
 
 class _SignInState extends State<SignIn> {
+  bool _isLoading = false;
 
   final AuthService _auth = AuthService();
   final formKey = GlobalKey<FormState>();
-  String error = '';
+ // String error = '';
   String email = '';
-  String password = '';
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
+ // String password = '';
+  //final TextEditingController _emailController = TextEditingController();
+  //final TextEditingController _otpController = TextEditingController();
 
 
-  EmailAuth emailAuth = new EmailAuth(
+  /*EmailAuth emailAuth = new EmailAuth(
     sessionName: "Sample session",
-  );
+  );*/
 
-  @override
  /* void initState() {
     super.initState();
     emailAuth.config(remoteServerConfiguration);
@@ -38,7 +43,7 @@ class _SignInState extends State<SignIn> {
   }*/
 
 
-
+/*
   void sendOtp() async {
     var result = await emailAuth.sendOtp(
         recipientMail: _emailController.text, otpLength: 5
@@ -48,8 +53,8 @@ class _SignInState extends State<SignIn> {
     }else {
       print("OTP was not sent");
     }
-  }
-  void verifyOtp() async {
+  }*/
+ /* void verifyOtp() async {
     var res = emailAuth.validateOtp(
         recipientMail: _emailController.text,
         userOtp: _otpController.value.text);
@@ -58,7 +63,7 @@ class _SignInState extends State<SignIn> {
     }else {
       print("INVALID OTP");
     }
-  }
+  }*/
 
 
   @override
@@ -66,9 +71,9 @@ class _SignInState extends State<SignIn> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("UMD MATCH"),
+          title: Text("UMD Dating App"),
           centerTitle: true,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.red.shade800,/*
           actions: [
             TextButton.icon(
                 onPressed: (){
@@ -77,108 +82,51 @@ class _SignInState extends State<SignIn> {
                 icon: Icon(Icons.person),
                 label: Text("Register"),
             )
-          ],
+          ],*/
         ),
-        body:Container(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        body:Center(
+          child: Padding (
+          padding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 50.0),
           child: Form(
             key: formKey,
             child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
 
-                  validator: (val) {
-                    if(val!.isEmpty) {
-                      return "Enter an email address";
-                    }
-                    if(!val.endsWith("umd.edu")) {
-                      return "Email address must be a UMD email address.";
-                    }
-                    return null;
-
-                  },
-                  onChanged: (val) {
-                    setState(() => email = val);
-                  },
+                RichText(
+                  text: const TextSpan(
+                    text: 'Please use ',
+                    style: TextStyle(
+                      color:  Colors.black,
+                      fontSize: 20
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(text: 'Terpmail', style: TextStyle(fontWeight: FontWeight.bold)),
+                      TextSpan(text: ' account for verification'),
+                    ],
+                  ),
                 ),
-                SizedBox(height: 20),
-                TextFormField(
-                  controller: _otpController,
-                  keyboardType: TextInputType.number,
-                  validator: (val) => val!.length < 6 ? 'Enter a password with more than 6 characters' : null,
-                  obscureText: true,
-                  onChanged: (val) {
-                    setState(() => password = val);
-                  },
-                ),
-                SizedBox(height: 20),
-                /*ElevatedButton(
-                    onPressed: () async{
 
-                    },
-                    child:ElevatedButton.icon(
-                      onPressed: () => sendOtp(),
-                      icon: Icon(
-                        Icons.ac_unit
-                      ),
-                      label: Text("Send OTP"),
+                SizedBox(height: 40),
 
-                      ),
+                SignInButtonBuilder(
+                    image: Image.asset('assets/images/google_logo.png',
+                        scale: 20),
 
-
-                ),*/
-                ElevatedButton(
-                    onPressed: () async {
-
-                    },
-                    child:ElevatedButton.icon(
-                       onPressed: () => verifyOtp()/* async {
-                         if(formKey.currentState!.validate()) {
-                           dynamic result = await _auth.signIn(email, password);
-                           if(result == null) {
-                             setState(() => error = 'Could not sign in with those credentials');
-                           }
-                         }
-                       }*/,
-                        icon: Icon(
-                            Icons.account_circle
-                        ),
-                        label: Text("LOGIN"),
-                      // style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
-                    )
-
+                    text: "Log In or Sign Up",
+                    backgroundColor:Colors.white ,
+                    textColor: Colors.black,
+                    highlightColor: Colors.redAccent,
+                    onPressed: ()async{
+                      _auth.signInWithGoogle(context: context);
+                    }
                 ),
 
               ],
             ),
           ),
-          /*ElevatedButton(
-              onPressed: () {
-              },
-              child:ElevatedButton.icon(
-                  onPressed: () {
-
-                  },
-                  icon: Icon(
-                      Icons.account_circle
-                  ),
-                  label: Text("LOGIN")
-                // style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
-              )
-
-          ),*/
-
-            /*ElevatedButton(
-            onPressed: () {  },
-            icon: Icon(
-              Icons.
-            )
-
-          )*/
-
+          ),
 
         )
     );
