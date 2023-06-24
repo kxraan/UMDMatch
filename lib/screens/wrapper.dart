@@ -12,7 +12,7 @@ class Wrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<FbUser?>(context);
+    final user = Provider.of<user_data?>(context);
 
     if(user == null) {
       return SignIn();

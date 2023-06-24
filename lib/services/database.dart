@@ -1,17 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+/*
+ import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:lib/Models/user.dart';
+import 'package:flutter/material.dart';
 
-class DatabaseService {
-  final String? uid;
-  DatabaseService(Map<dynamic, String> map, {this.uid});
-  final CollectionReference userCollection = FirebaseFirestore.instance.collection('user');
 
-  Future updateUserData(String name, String age, String sex, String genderpref) async {
-    return await userCollection.doc(uid).set( {
-      'name' : name,
-      'age'  : age,
-      'sex' : sex,
-      'genderpref' : genderpref,
+
+ class Database extends GetxController{
+
+  static Database get instance => Get.find();
+
+  final _db = FirebaseFirestore.instance;
+  
+  createUser(FbUser user) async{
+    await _db.collection("Users").add(user.toJson()).whenComplete(() =>
+    Get.snackbar("Success", "Account has been created",
+    snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.black,
+      colorText: Colors.redAccent
+    ))
+    .catchError((error, stackTrace){
+      Get.snackbar("Error", "Something went wrong",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black,
+          colorText: Colors.redAccent
+      );
+      print(error.toString());
     });
 
   }
-}
+ }*/

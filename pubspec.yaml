@@ -40,6 +40,9 @@ dependencies:
   image_picker: ^0.8.6+1
   csv: ^5.0.1
   autocomplete_textfield: ^2.0.1
+  get: ^4.6.1
+  get_storage: ^2.0.3
+  dropdown_search: 5.0.6
 
   flutter_signin_button:
   # The following adds the Cupertino Icons font to your application.
@@ -47,6 +50,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   email_auth: 1.0.0
   firebase_storage: ^11.2.3
+
 
 dev_dependencies:
   flutter_test:

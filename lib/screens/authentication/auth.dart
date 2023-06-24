@@ -10,11 +10,11 @@ import '../../Models/user.dart';
 class AuthService {
   final FirebaseAuth _authen = FirebaseAuth.instance;
 
-  FbUser?  _userFromFirebaseUser(User? user) {
-    return user != null ? FbUser(name: user.uid) : null;
+  user_data?  _userFromFirebaseUser(User? user) {
+    return user != null ? user_data(name: user.uid) : null;
   }
   //auth change user stream
-  Stream<FbUser?> get user {
+  Stream<user_data?> get user {
     return _authen.authStateChanges().map(_userFromFirebaseUser!);//(User? customer) => _userFromFirebaseUser(user!)
   }
 
@@ -37,9 +37,9 @@ class AuthService {
       final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
       user = userCredential.user;
-      print(user!.email);
+      //print(user!.email);
       if(user!.email!.endsWith('terpmail.umd.edu')){
-        print(user.email);
+        //print(user.email);
       }else{
         await GoogleSignIn().disconnect();
         FirebaseAuth.instance.currentUser!.delete();
