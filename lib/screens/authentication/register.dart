@@ -9,7 +9,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:lib/Models/user.dart';
 import '../../Home/home.dart';
 import 'auth.dart';
-import 'email_verification_page.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 
 
