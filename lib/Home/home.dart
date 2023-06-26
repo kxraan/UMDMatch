@@ -4,80 +4,17 @@ import 'package:flutter/material.dart';
 import '../screens/swipe.dart';
 import '../screens/authentication/auth.dart';
 
-class Home extends StatelessWidget {
- // const Home({Key? key}) : super(key: key);
 
- // const MyApp({super.key});
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    final AuthService _auth = AuthService();
-    return Container(
-
-      width: double.infinity,
-      height: 350,
-      decoration: const ShapeDecoration(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(64),
-            bottomRight: Radius.circular(64),
-          ),
-        ),
-        gradient: LinearGradient(
-          colors: <Color>[
-            Color(0xFFFD0E42),
-            Color(0xFFC30F31),
-          ],
-        ),
-      ),
-      child:TextButton.icon(
-        onPressed:() async {
-          await _auth.signout();
-        },
-        icon:Icon(
-            Icons.person
-        ),
-
-        label: Text("Logout"),
-      ),
-      /*Padding(
-        padding: EdgeInsets.only(top: 46.0, left: 20.0),
-        child: TextButton.icon(
-            onPressed:() async {
-              await _auth.signout();
-            },
-            icon:Icon(
-                Icons.person
-            ),
-
-            label: Text("Logout"),
-        )*/
-        /* Text(
-
-          'Discover',
-          style: TextStyle(
-            fontFamily: 'Nunito',
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            fontSize: 36,
-          ),
-        ),*/
-      );
-  //  );
-  }
-  }
 
 class Profile {
   const Profile({
     required this.name,
-    required this.distance,
     required this.imageAsset,
     required this.age,
     required this.sex,
     required this.genderpref,
   });
   final String name;
-  final String distance;
   final String imageAsset;
   final String age;
   final String sex;
@@ -137,15 +74,7 @@ class ProfileCard extends StatelessWidget {
                         fontSize: 21,
                       ),
                     ),
-                    Text(
-                      profile.distance,
-                      style: const TextStyle(
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
+
                   ],
                 ),
               ),
@@ -199,6 +128,7 @@ class DragWidget extends StatefulWidget {
 }
 
 class _DragWidgetState extends State<DragWidget> {
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -356,33 +286,39 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   List<Profile> draggableItems = [
     const Profile(
         name: 'Irene',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_1.jpg',
+        imageAsset: 'assets/images/karan1.jpg',
         age: "19",
         sex: "Female",
         genderpref: "Male",
 
     ),
-
-  /*  const Profile(
-        name: 'Dave',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_5.jpg'),*/
-  /*  const Profile(
-        name: 'Bob',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_3.jpg'),*/
-   /* const Profile(
-        name: 'Carol',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_4.jpg'),*/
     const Profile(
         name: 'Alice',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_2.jpg',
+        imageAsset: 'assets/images/karan2.jpg',
         age: "19",
         sex: "Female",
         genderpref: "male",
+    ),
+    const Profile(
+      name: 'Karan',
+      imageAsset: 'assets/images/karan3.jpg',
+      age: "19",
+      sex: "Female",
+      genderpref: "male",
+    ),
+    const Profile(
+      name: 'Krisha',
+      imageAsset: 'assets/images/karan4.jpg',
+      age: "19",
+      sex: "Female",
+      genderpref: "male",
+    ),
+    const Profile(
+      name: 'Zoyah',
+      imageAsset: 'assets/images/karan5.jpg',
+      age: "19",
+      sex: "Female",
+      genderpref: "male",
     ),
   ];
 
@@ -559,97 +495,6 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   }
 }
 
-void main() {
-  runApp(const MaterialApp(
-    title: 'Navigation Basics',
-    home: FirstRoute(),
-  ));
-}
-
-class FirstRoute extends StatelessWidget {
-  const FirstRoute({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          child: const Text('Open route'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SwipePage()),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
 
 
-class SwipePage extends StatelessWidget {
-  const SwipePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final AuthService _auth = AuthService();
-    return Scaffold(
-        appBar: AppBar(
-          //title: const Text('Second Route'),
-          elevation: 0.0,
-          actions: [
-            TextButton.icon(
-                onPressed:() async {
-                  await _auth.signout();
-                },
-                icon:Icon(
-                    Icons.person
-                ),
-
-                label: Text("Logout")
-            )
-          ],
-        ),
-        body: Stack(
-          children: const [
-            BackgroudCurveWidget(),
-            CardsStackWidget(),
-          ],
-        )
-    );
-  }
-}
-
-
-
-
-
-
- /* final AuthService _auth = AuthService();
-  //CARDS SWIPING PAGE
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white70,
-        elevation: 0.0,
-        actions: [
-          TextButton.icon(
-              onPressed:() async {
-                await _auth.signout();
-              },
-              icon:Icon(
-                Icons.person
-              ),
-
-              label: Text("Logout")
-          )
-        ],
-      ),
-    );
-  }*/
 
