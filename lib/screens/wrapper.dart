@@ -42,6 +42,9 @@ class Wrapper extends StatelessWidget {
                if (flag.data == true) {
                  return Home();
                } else {
+                 /* TODO
+                 *   make sure it directs to register if gender pref is not inputted
+                 * Currently it just checks if "required" document is created */
                  return Register();
                }
              }else{
