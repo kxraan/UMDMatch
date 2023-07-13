@@ -1,10 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:lib/screens/header.dart';
 
 
 import '../screens/swipe.dart';
 import '../screens/authentication/auth.dart';
 
+class Home extends StatelessWidget {
+  const Home({Key? key}) : super(key: key);
 
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
+          children:  [
+            Header(),
+            CardsStackWidget(),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class Profile {
   const Profile({
@@ -31,7 +51,8 @@ class ProfileCard extends StatelessWidget {
     return Container(
       height: 580,
       width: 340,
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.fromLTRB(0, 30, 00, 15),
+
       child: Stack(
         children: [
           Positioned.fill(
@@ -111,7 +132,7 @@ class ActionButtonWidget extends StatelessWidget {
 }
 
 class DragWidget extends StatefulWidget {
-  const DragWidget({
+   DragWidget({
     Key? key,
     required this.profile,
     required this.index,
@@ -122,6 +143,7 @@ class DragWidget extends StatefulWidget {
   final int index;
   final ValueNotifier<Swipe> swipeNotifier;
   final bool isLastCard;
+  double? pos;
 
   @override
   State<DragWidget> createState() => _DragWidgetState();
@@ -134,6 +156,7 @@ class _DragWidgetState extends State<DragWidget> {
     return Center(
       child: Draggable<int>(
         // Data is the value this Draggable stores.
+        axis: Axis.horizontal,
         data: widget.index,
         feedback: Material(
           color: Colors.transparent,
@@ -143,8 +166,8 @@ class _DragWidgetState extends State<DragWidget> {
               return RotationTransition(
                 turns: widget.swipeNotifier.value != Swipe.none
                     ? widget.swipeNotifier.value == Swipe.left
-                    ? const AlwaysStoppedAnimation(-15 / 360)
-                    : const AlwaysStoppedAnimation(15 / 360)
+                    ?  AlwaysStoppedAnimation(widget.pos! / 360)
+                    :  AlwaysStoppedAnimation(widget.pos!/ 360)
                     : const AlwaysStoppedAnimation(0),
                 child: Stack(
                   children: [
@@ -185,11 +208,13 @@ class _DragWidgetState extends State<DragWidget> {
               dragUpdateDetails.globalPosition.dx >
                   MediaQuery.of(context).size.width / 2) {
             widget.swipeNotifier.value = Swipe.right;
+            widget.pos= dragUpdateDetails.delta.dx;
           }
           if (dragUpdateDetails.delta.dx < 0 &&
               dragUpdateDetails.globalPosition.dx <
                   MediaQuery.of(context).size.width / 2) {
             widget.swipeNotifier.value = Swipe.left;
+            widget.pos= dragUpdateDetails.delta.dx;
           }
         },
         onDragEnd: (drag) {
@@ -283,6 +308,20 @@ class CardsStackWidget extends StatefulWidget {
 
 class _CardsStackWidgetState extends State<CardsStackWidget>
     with SingleTickerProviderStateMixin {
+
+  initialize() async {
+  var users = await FirebaseFirestore.instance.collection('users').get();
+  for(var user in users.docs){
+    print(user.toString());
+     var profile=   user.data();
+     print (profile);
+     var  req =profile['required'];
+
+    // print(req.data());
+  }
+
+
+  }
   List<Profile> draggableItems = [
     const Profile(
         name: 'Irene',
@@ -344,6 +383,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   @override
   Widget build(BuildContext context) {
+    initialize();
     return Stack(
       clipBehavior: Clip.none,
       children: [

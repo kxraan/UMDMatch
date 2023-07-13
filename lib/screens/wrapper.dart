@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lib/screens/authentication/register.dart';
 import 'package:lib/screens/authentication/sign_in.dart';
+import 'package:lib/screens/header.dart';
 import 'package:provider/provider.dart';
 
 import '../Home/home.dart';
@@ -41,7 +42,7 @@ class Wrapper extends StatelessWidget {
            builder:(context, flag) {
              if (flag.hasData) {
                if (flag.data == true) {
-                 return CardsStackWidget();
+                 return Home()  ;
                } else {
                  return Register();
                }
