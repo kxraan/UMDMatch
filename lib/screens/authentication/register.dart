@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:lib/Models/user.dart';
+import 'package:lib/screens/authentication/signOut.dart';
 import '../../Home/home.dart';
 import 'auth.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -473,7 +474,7 @@ class _GenderPrefState extends State<GenderPref> {
                   onPressed: () {
                     storeUserGenderPref(dropDownVal);
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Home()));
+                        MaterialPageRoute(builder: (context) => signOut()));
                   },
                   icon: Icon(Icons.arrow_forward),
                   color: Colors.red,
