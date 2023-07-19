@@ -29,7 +29,7 @@ class _SignInState extends State<SignIn> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("UMD Dating App"),
+          title: Text("UMD Match"),
           centerTitle: true,
           backgroundColor: Colors.red.shade800,/*
           actions: [

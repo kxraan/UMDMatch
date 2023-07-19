@@ -1,3 +1,4 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csv/csv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -242,7 +243,7 @@ class Major extends StatefulWidget {
 }
 
 class _MajorState extends State<Major> {
-  // GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
 
   String dropDownVal = 'Undecided/Undeclared';
   List<List<dynamic>> _data = [];
@@ -258,7 +259,7 @@ class _MajorState extends State<Major> {
   @override
   void initState() {
     super.initState();
-    loadCSVData();
+    loadCSV();
   }
 
   Future<void> loadCSVData() async {
@@ -312,19 +313,20 @@ class _MajorState extends State<Major> {
                   return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
                 });
               },
-              onSelected: (String selectedOption) {
+              onSelected: (String option) {
                 setState(() {
-                  dropDownVal = selectedOption;
+                  dropDownVal = option;
+                  print('The $option was selected');
                 });
               },
-              fieldViewBuilder: (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
-                return TextFormField(
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                    labelText: 'Select Major',
-                  ),
-                );
-              },
+              // fieldViewBuilder: (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
+              //   return TextFormField(
+              //     controller: textEditingController,
+              //     decoration: InputDecoration(
+              //       labelText: 'Select Major',
+              //     ),
+              //   );
+              // },
               // isExpanded: true,
               // value: dropDownVal,
               // hint: Text('Select Major'),
@@ -360,7 +362,7 @@ class _MajorState extends State<Major> {
                 color: Colors.red,
                 splashColor: Colors.redAccent,
               ),
-            ])
+            ] )
           ],
         ),
       ),
