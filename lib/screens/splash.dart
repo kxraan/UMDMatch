@@ -19,55 +19,54 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // _controller = VideoPlayerController.asset('assets/rand3.mp4')
-    //
-    // ..initialize().then((_SplashScreenState) {
-    //   setState(() {
-    //
-    //   });
-    // })
-    // ..setVolume(0.0);
-    //
-    // _playVideo();
-    // Timer(Duration(seconds: 5),(){
-    //   Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Wrapper(),));
-    // });
-  }
-  // void _playVideo() async {
-  //   _controller.play();
+    _controller = VideoPlayerController.asset('assets/UMDMatchfinal.mp4')
 
-    // await Future.delayed(const Duration(seconds: 10));
-    // Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Wrapper(),));
- // }
+    ..initialize().then((_SplashScreenState) {
+      setState(() {
+
+      });
+    })
+    ..setVolume(0.0);
+
+    _playVideo();
+    Timer(Duration(seconds: 5),(){
+      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Wrapper(),));
+    });
+  }
+  void _playVideo() async {
+    _controller.play();
+
+    await Future.delayed(const Duration(seconds: 10));
+    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Wrapper(),));
+ }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.red,
-      // body: Center(
-      //   child: _controller.value.isInitialized
-      //       ? AspectRatio(
-      //       aspectRatio: _controller.value.aspectRatio,
-      //       child: VideoPlayer(
-      //         _controller,
-      //       ),
-      //   )
-      //   : Container(),
-      //
-      //
-      // ),
-      body: Container(
-        color: Colors.redAccent,
-        child: Center(child: Text('UMD MATCH',style: TextStyle(
-          fontSize: 36,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-
-        ),
-        ),
-        ),
+      backgroundColor: Colors.white,
+      body: Center(
+        child: _controller.value.isInitialized
+            ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(
+              _controller,
+            ),
+        )
+        : Container(),
 
       ),
+      // body: Container(
+      //   color: Colors.redAccent,
+      //   child: Center(child: Text('UMD MATCH',style: TextStyle(
+      //     fontSize: 36,
+      //     fontWeight: FontWeight.bold,
+      //     color: Colors.white,
+      //
+      //   ),
+      //   ),
+      //   ),
+      //
+      // ),
     );
   }
 }
