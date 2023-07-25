@@ -89,6 +89,7 @@ class AuthService {
       return null;
     }
   }
+
   static SnackBar customSnackBar({required String content}) {
     return SnackBar(
       duration: Duration(seconds: 10),

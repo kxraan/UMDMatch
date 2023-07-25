@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lib/screens/authentication/register.dart';
 import 'package:lib/screens/authentication/sign_in.dart';
+import 'package:lib/screens/splash.dart';
 
 //import 'package:lib/firebase_options.dart';
 
@@ -37,12 +38,9 @@ class MyApp extends StatelessWidget {
         value: AuthService().user,
         initialData: null,
         child: MaterialApp(
-          home: Wrapper(),
+          home:SplashScreen(),//Earlier Wrapper()
         )
-
     );
-
-
   }
 }
 
