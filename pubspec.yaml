@@ -50,6 +50,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   email_auth: 1.0.0
   firebase_storage: ^11.2.3
+  intl: ^0.18.1
 
 
 dev_dependencies:
