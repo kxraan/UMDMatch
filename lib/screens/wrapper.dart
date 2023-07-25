@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lib/screens/authentication/register.dart';
 import 'package:lib/screens/authentication/sign_in.dart';
 import 'package:lib/screens/header.dart';
+import 'package:lib/screens/splash.dart';
 import 'package:provider/provider.dart';
 
 import '../Home/home.dart';
@@ -50,7 +51,7 @@ class Wrapper extends StatelessWidget {
                /*TODO
                     Create a laoding page !!!!
                 */
-               return CircularProgressIndicator();
+               return SplashScreen();
 
              }
            });
