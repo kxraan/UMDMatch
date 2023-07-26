@@ -56,12 +56,22 @@ class _RegisterState extends State<Register> {
   static final  TextEditingController nameController = TextEditingController();
   Future<void> storeUserName(String name) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+
+
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId!)
+        .set({'email' : email.trim()}, SetOptions(merge: true));
+
     try {
       //DateTime dobDate = DateTime.parse(dob);
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'name' : name.trim()}, SetOptions(merge: true));
       print('User name stored successfully.');
     } catch (error) {
@@ -148,12 +158,14 @@ class DateofBirth extends StatelessWidget {
 
   Future<void> storeUserDOB(String dob) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       DateTime dobDate = DateTime.parse(dob);
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'dob': Timestamp.fromDate(dobDate)}, SetOptions(merge: true));
       print('User date of birth stored successfully.');
     } catch (error) {
@@ -273,11 +285,13 @@ class _MajorState extends State<Major> {
 
   Future<void> storeUserMajor(String major) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'major': major.trim()}, SetOptions(merge: true));
       print('User major stored successfully.');
     } catch (error) {
@@ -383,11 +397,13 @@ class _GenderState extends State<Gender> {
 
   Future<void> storeUserGender(String gender) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'gender': gender.trim()}, SetOptions(merge: true));
       print('User gender stored successfully.');
     } catch (error) {
@@ -472,11 +488,13 @@ class _GenderPrefState extends State<GenderPref> {
 
   Future<void> storeUserGenderPref(String gender) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'gender_pref': gender.trim()}, SetOptions(merge: true));
       print('User gender pref stored successfully.');
     } catch (error) {
@@ -553,180 +571,5 @@ class _GenderPrefState extends State<GenderPref> {
   }
 }
 
-// class _uploadImg extends StatefulWidget {
-//   @override
-//   _uploadImgState createState() => _uploadImgState();
-// }
-//
-// class _uploadImgState extends State<_uploadImg> {
-//   Uint8List? _image;
-//   void selectImage() async {
-//     Uint8List img = await pickImage(ImageSource.gallery);
-//     setState(() {
-//       _image = img;
-//     });
-//   }
-//   void saveProfile() async{
-//     String resp = await StoreData().saveData(file: _image!);
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("UMD Match"),
-//       ),
-//       body: Center(
-//         child: Container(
-//           padding: const EdgeInsets.symmetric(
-//             horizontal: 32,
-//           ),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: [
-//               const SizedBox(
-//                 height: 24,
-//               ),
-//               Stack (
-//                 children: [
-//                   _image != null
-//                       ? CircleAvatar(
-//                     radius: 64,
-//                     backgroundImage: MemoryImage(_image!),
-//                   )
-//                       : const CircleAvatar(
-//                     radius: 64,
-//                     backgroundImage: NetworkImage(
-//                         'https://png.pngitem.com/pimgs/s/421-4212266_transparent-default-avatar-png-default-avatar-images-png.png'),
-//                   ),
-//                   Positioned(
-//                     bottom: -10,
-//                     left: 80,
-//                     child: IconButton(
-//                       onPressed: selectImage,
-//                       icon: const Icon(Icons.add_a_photo),
-//                     ),
-//                   )
-//                 ],
-//
-//               ),
-//               const SizedBox(
-//                 height: 24,
-//               ),
-//               ElevatedButton(
-//                 onPressed: saveProfile,
-//                 child: const Text('Save Profile'),
-//               )
-//
-//
-//             ],
-//           ),
-//         ),
-//
-//
-//       ),
-//     );
-//
-//   }
-// }
-
-
-
-// class UserImg extends StatefulWidget {
-//
-//   final Function(String imageUrl) onFileChanged;
-//   UserImg( {
-//     required this.onFileChanged,
-//   });
-//   @override
-//   _UserImgState createState() => _UserImgState();
-//
-//
-// }
-// class _UserImgState extends State<UserImg> {
-//   final ImagePicker _picker = ImagePicker();
-//
-//   String? imageUrl;
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         if(imageUrl == null)
-//           Icon(Icons.image,size: 60,color: Theme.of(context).primaryColor),
-//         if(imageUrl != null)
-//           InkWell(
-//             splashColor: Colors.transparent,
-//             highlightColor: Colors.transparent,
-//             onTap: () => _selectPhoto(),
-//             child: AppRoundImage.url (
-//               imageUrl!,
-//               width:80,
-//               height:80,
-//             ),
-//           ),
-//         InkWell(
-//           onTap: () => _selectPhoto(context),
-//           child: Padding(
-//             padding: EdgeInsets.all(8.0),
-//             child: Text(imageUrl != null? 'Change Photo': 'Select Photo',
-//               style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),
-//             ),
-//           ),
-//         ),
-//
-//       ],
-//     );
-//   }
-// }
-// Future _selectPhoto(context) async {
-//   await showModalBottomSheet (context: context, builder: (context) => BottomSheet (
-//     builder: (context) => Column ( mainAxisSize: MainAxisSize.min, children: [
-//       ListTile(leading: Icon (Icons.camera), title: Text('Camera'), onTap: () {
-//         Navigator.of(context).pop();
-//         _pickImage (ImageSource .camera);
-//       }),
-//       ListTile(leading: Icon(Icons.filter), title: Text('Pick a file'), onTap: () {
-//         Navigator.of(context).pop();
-//         _pickImage(ImageSource.gallery);
-//       }),
-//     ],
-//     ),
-//     onClosing: () {}, )); // BottomSheet
-// }
-//
-//
-// Future _pickImage(ImageSource img) async {
-//   final pickedFile = await _picker.pickImage(source: source, imageQuality: 50);
-//   if(pickedFile == null) {
-//     return;
-//   }
-//   var file = await ImageCropper.cropImage(sourcePath: pickedFile.path, aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1) );
-//   if(file == null) {
-//     return;
-//   }
-//
-//   file = await compressImage(file.path,35) ;
-//   await _uploadFile(file.path);
-//
-// }
-//
-// Future compressImage(String path, int quality) async {
-//   final newPath = p.join((await getTemporaryDirectory()).path,'${DateTime.now()}.${p.extension(path)}');
-//
-//   final result = await FlutterImageCompress.compressAndGetFile(
-//     path, newPath, quality: quality,
-//   );
-//   return result;
-// }
-//
-// Future _uploadFile(String path) async {
-//   final ref = storage.FirebaseStorage.instance.ref().child ('images').child('${DateTime.now().toIso8601String() + p.basename (path)}');
-//
-//   final result = await ref.putFile(File(path));
-//   final fileUrl = await result.ref.getDownloadURL();
-//
-//   setState((){imageUrl = fileUrl;});
-//
-//   widget.onFileChanged(fileUrl);
-// }
 
 

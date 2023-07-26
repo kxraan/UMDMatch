@@ -25,7 +25,9 @@ class _ImageUploaderState extends State<ImageUploader> {
   Future<void> _uploadImage(File image, var count) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       final fileName = DateTime.now().millisecondsSinceEpoch.toString();
       final Reference reference =
@@ -46,10 +48,10 @@ class _ImageUploaderState extends State<ImageUploader> {
 
         });
       }else {*/
-        print(count);
+        //print(count);
         await firestore.collection('users')
-            .doc(userId).collection('profile').doc('User_Images').set({
-          'Img $count': downloadURL},  SetOptions(merge: true)
+            .doc(userId!).collection('profile').doc('images')
+            .set({'Img $count': downloadURL},  SetOptions(merge: true)
 
         );
 

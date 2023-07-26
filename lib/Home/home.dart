@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lib/screens/header.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lib/screens/splash.dart';
 
 
 
@@ -316,22 +317,45 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   initialize() async {
 
-    var u = await FirebaseFirestore.instance.collection('users').get();
+/*    var u = await FirebaseFirestore.instance.collection('users').get();
     var v = u.docs.toString();
     print(v);
+    */
 
   CollectionReference ref  =  FirebaseFirestore.instance.collection('users');
   QuerySnapshot users = await ref.get();
+  print(users.size);
 
   HashMap<String, Profile> data = new HashMap<String, Profile>();
+  List <Profile> da = [];
 
-  for (var document in users.docs) {
-    Map<String, dynamic>? d = document.data() as Map<String, dynamic>?;
-    print(d);
+  for (DocumentSnapshot document in users.docs) {
+
+    print(document.id);
+    CollectionReference profile = document.reference.collection('profile');
+    var required = await profile.doc('required').get();
+    var img = await profile.doc('images').get();
+    print(required.get('dob'));
+    print(required.get('gender'));
+    print(img.get('Img 1'));
+    draggableItems.add(
+         Profile(
+          name: required.get('name'),
+          imageAsset: img.get('Img 1'),
+          age: required.get('dob'),
+          sex: required.get('gender'),
+          genderpref: required.get('gender_pref'),
+
+        )
+    );
   }
 
 
   }
+
+
+
+
   List<Profile> draggableItems = [
     const Profile(
         name: 'Irene',
@@ -397,6 +421,33 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     return Stack(
       clipBehavior: Clip.none,
       children: [
+       /* StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('users').snapshots(),
+            builder: (context, snapshot) {
+
+
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SplashScreen();
+              }
+
+              // Data is ready to be displayed
+              List<String> texts = [];
+              snapshot.data!.docs.forEach((userDocument) {
+                // Reference to the user's messages collection
+                print("here"+ userDocument.id);
+                CollectionReference messagesCollection =
+                userDocument.reference.collection('profile');
+
+
+              });
+
+              return DragWidget(
+                profile: draggableItems[0],
+                index: 0,
+                swipeNotifier: swipeNotifier,
+              );
+
+            }),*/
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: ValueListenableBuilder(
@@ -540,6 +591,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
             },
           ),
         ),
+
       ],
     );
   }

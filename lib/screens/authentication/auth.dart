@@ -39,6 +39,7 @@ class AuthService {
       user = userCredential.user;
       //print(user!.email);
       if(user!.email!.endsWith('terpmail.umd.edu')){
+
         //print(user.email);
       }else{
         await GoogleSignIn().disconnect();
