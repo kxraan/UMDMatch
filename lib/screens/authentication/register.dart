@@ -204,7 +204,7 @@ class DateofBirth extends StatelessWidget {
               controller: dateController,
               keyboardType: TextInputType.datetime,
               decoration: InputDecoration(
-                labelText: 'Date of Birth',
+                labelText: 'Day',
                 hintText: 'DD',
                 border: OutlineInputBorder(),
               ),
@@ -221,7 +221,7 @@ class DateofBirth extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  String dob = yearController.text + "/"+ monthController.text + "/" + dateController.text;
+                  String dob = yearController.text + "-"+ monthController.text + "-" + dateController.text;
                   storeUserDOB(dob);
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => Major()));

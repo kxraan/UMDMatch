@@ -19,6 +19,10 @@ class Wrapper extends StatelessWidget {
     String? userId = currentUser?.uid;
 
     try {
+
+      /*TODO
+      * Make it full proof. Only checks for required as of now
+      */
       var pref = await FirebaseFirestore.instance.collection('users').doc(
           userId).collection('profile').doc('required').get();
       return pref.exists;

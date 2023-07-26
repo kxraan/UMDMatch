@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -313,14 +315,19 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     with SingleTickerProviderStateMixin {
 
   initialize() async {
-  var users = await FirebaseFirestore.instance.collection('users').get();
-  for(var user in users.docs){
-    print(user.toString());
-     var profile=   user.data();
-     print (profile);
-     var  req =profile['required'];
 
-    // print(req.data());
+    var u = await FirebaseFirestore.instance.collection('users').get();
+    var v = u.docs.toString();
+    print(v);
+
+  CollectionReference ref  =  FirebaseFirestore.instance.collection('users');
+  QuerySnapshot users = await ref.get();
+
+  HashMap<String, Profile> data = new HashMap<String, Profile>();
+
+  for (var document in users.docs) {
+    Map<String, dynamic>? d = document.data() as Map<String, dynamic>?;
+    print(d);
   }
 
 
