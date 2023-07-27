@@ -315,12 +315,74 @@ class CardsStackWidget extends StatefulWidget {
 class _CardsStackWidgetState extends State<CardsStackWidget>
     with SingleTickerProviderStateMixin {
 
-  initialize() async {
+  fakeAcc() async {
 
-/*    var u = await FirebaseFirestore.instance.collection('users').get();
-    var v = u.docs.toString();
-    print(v);
-    */
+    for(var i=0; i<=25; i++){
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i')
+          .set({'email' : 'test$i@gmail.com'}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('required')
+          .set({'name' : 'test$i'}, SetOptions(merge: true));
+
+      DateTime dobDate = DateTime.parse('2003-02-01');
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('required').
+      set({'dob': Timestamp.fromDate(dobDate)}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('required').
+      set({'major': 'Computer Science'}, SetOptions(merge: true));
+
+      if(i%2==0) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('profile').doc('required').
+        set({'gender': 'Male'}, SetOptions(merge: true));
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('profile').doc('required').
+        set({'gender_pref': 'Female'}, SetOptions(merge: true));
+
+      }else{
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('profile').doc('required').
+        set({'gender': 'Female'}, SetOptions(merge: true));
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('profile').doc('required').
+        set({'gender_pref': 'Male'}, SetOptions(merge: true));
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('images')
+          .set({'Img 1': 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034111.jpg?alt=media&token=c9becec2-eac8-4711-962d-bec6e7018dbf'},  SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('images')
+          .set({'Img 2': 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034180.jpg?alt=media&token=ca39d4c3-1cc2-4628-8acf-208e20644f41'},  SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('images')
+          .set({'Img 3': 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034183.jpg?alt=media&token=c91b2de3-a0b2-4523-bfa9-dd10f062dde5'},  SetOptions(merge: true));
+
+        print("Completed $i");
+    }
+
+  }
+
+  initialize() async {
 
   CollectionReference ref  =  FirebaseFirestore.instance.collection('users');
   QuerySnapshot users = await ref.get();
@@ -418,6 +480,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   @override
   Widget build(BuildContext context) {
     initialize();
+    //fakeAcc();
     return Stack(
       clipBehavior: Clip.none,
       children: [
