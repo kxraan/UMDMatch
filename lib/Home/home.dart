@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -52,6 +53,8 @@ class ProfileCard extends StatelessWidget {
   const ProfileCard({Key? key, required this.profile}) : super(key: key);
   final Profile profile;
 
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -64,10 +67,12 @@ class ProfileCard extends StatelessWidget {
           Positioned.fill(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                profile.imageAsset,
-                fit: BoxFit.fitHeight,
-              ),
+
+                child:Image.network(
+                  (profile.imageAsset),
+                  //placeholder: (context,url) => CircularProgressIndicator(),
+                  fit: BoxFit.fitHeight,
+                )
             ),
           ),
           Positioned(
@@ -382,7 +387,26 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   }
 
-  initialize() async {
+  deleteFakeACC() async {
+    for(var i =3; i<=25; i++){
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').delete();
+    }
+  }
+
+  List<Profile> draggableItems = [
+
+    /*const Profile(
+      name: 'Zoyah',
+      imageAsset: 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034111.jpg?alt=media&token=c9becec2-eac8-4711-962d-bec6e7018dbf',
+      age: "19",
+      sex: "Female",
+      genderpref: "male",
+    ),*/
+  ];
+
+  Future<List<Profile>> initialize() async {
 
   CollectionReference ref  =  FirebaseFirestore.instance.collection('users');
   QuerySnapshot users = await ref.get();
@@ -393,69 +417,31 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   for (DocumentSnapshot document in users.docs) {
 
-    print(document.id);
+    //print(document.id);
     CollectionReference profile = document.reference.collection('profile');
     var required = await profile.doc('required').get();
     var img = await profile.doc('images').get();
-    print(required.get('dob'));
-    print(required.get('gender'));
-    print(img.get('Img 1'));
+
+    var days = DateTime.now().difference(required.get('dob').toDate()).inDays;
+    var age = days ~/360;
+    //print(img.get('Img 1'));
     draggableItems.add(
          Profile(
           name: required.get('name'),
-          imageAsset: img.get('Img 1'),
-          age: required.get('dob'),
+          imageAsset: (img.get('Img 1')),
+          age: '$age',
           sex: required.get('gender'),
           genderpref: required.get('gender_pref'),
 
         )
     );
   }
-
-
+  return draggableItems;
   }
 
 
 
 
-  List<Profile> draggableItems = [
-    const Profile(
-        name: 'Irene',
-        imageAsset: 'assets/images/karan1.jpg',
-        age: "19",
-        sex: "Female",
-        genderpref: "Male",
-
-    ),
-    const Profile(
-        name: 'Alice',
-        imageAsset: 'assets/images/karan2.jpg',
-        age: "19",
-        sex: "Female",
-        genderpref: "male",
-    ),
-    const Profile(
-      name: 'Karan',
-      imageAsset: 'assets/images/karan3.jpg',
-      age: "19",
-      sex: "Female",
-      genderpref: "male",
-    ),
-    const Profile(
-      name: 'Krisha',
-      imageAsset: 'assets/images/karan4.jpg',
-      age: "19",
-      sex: "Female",
-      genderpref: "male",
-    ),
-    const Profile(
-      name: 'Zoyah',
-      imageAsset: 'assets/images/karan5.jpg',
-      age: "19",
-      sex: "Female",
-      genderpref: "male",
-    ),
-  ];
 
   ValueNotifier<Swipe> swipeNotifier = ValueNotifier(Swipe.none);
   late final AnimationController _animationController;
@@ -463,10 +449,16 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   @override
   void initState() {
     super.initState();
+    //deleteFakeACC();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
+     initialize().then((value) {
+       setState(() {
+          //draggableItems = value;
+       });
+     });
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         draggableItems.removeLast();
@@ -479,38 +471,12 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   @override
   Widget build(BuildContext context) {
-    initialize();
+
     //fakeAcc();
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
-       /* StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('users').snapshots(),
-            builder: (context, snapshot) {
-
-
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SplashScreen();
-              }
-
-              // Data is ready to be displayed
-              List<String> texts = [];
-              snapshot.data!.docs.forEach((userDocument) {
-                // Reference to the user's messages collection
-                print("here"+ userDocument.id);
-                CollectionReference messagesCollection =
-                userDocument.reference.collection('profile');
-
-
-              });
-
-              return DragWidget(
-                profile: draggableItems[0],
-                index: 0,
-                swipeNotifier: swipeNotifier,
-              );
-
-            }),*/
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: ValueListenableBuilder(
