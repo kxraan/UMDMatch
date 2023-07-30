@@ -36,17 +36,20 @@ class Home extends StatelessWidget {
 class Profile {
   const Profile({
     required this.name,
-    required this.imageAsset,
+    required this.image1,
+    required this.image2,
     required this.age,
     required this.sex,
     required this.genderpref,
+    required this.major,
   });
   final String name;
-  final String imageAsset;
+  final String image1;
+  final String image2;
   final String age;
   final String sex;
   final String genderpref;
-
+  final String major;
 }
 
 class ProfileCard extends StatelessWidget {
@@ -60,58 +63,112 @@ class ProfileCard extends StatelessWidget {
     return Container(
       height: 580,
       width: 340,
-      padding: const EdgeInsets.fromLTRB(0, 30, 00, 15),
+      padding: const EdgeInsets.fromLTRB(0, 40, 00, 00),
 
-      child: Stack(
+      child: ListView(
+
         children: [
-          Positioned.fill(
-            child: ClipRRect(
+
+          Container(
+            //height: 580,
+            padding: const EdgeInsets.fromLTRB(0, 0, 00, 15),
+            child: Column(
+            children: [
+            ClipRRect(
               borderRadius: BorderRadius.circular(10),
 
+                child: Stack(
+                children: <Widget>[
+                  Image.network(
+                  (profile.image1),
+                  fit: BoxFit.fitHeight,
+
+                ),
+                  Container(
+                    //padding: const EdgeInsets.only(top: 30),
+
+                  /*  height: 580,
+                   width: 340,
+                    alignment: Alignment.topLeft,
+                    decoration: ShapeDecoration(
+                      color: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      shadows: <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),*/
+                    alignment: Alignment.bottomLeft,
+                    //child: Padding(
+                      padding: const EdgeInsets.only(left: 20, top: 50),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+
+                        children: [
+                          Row(
+                              children: [
+                                Text(
+                                  profile.name,
+                                  style: const TextStyle(
+                                    fontFamily: 'Nunito',
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 21,
+
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.only(right: 10.0),),
+                                Text(
+                                  profile.age,
+                                  style: const TextStyle(
+                                    fontFamily: 'Nunito',
+                                    fontSize: 21,
+                                  ),
+                                ),
+                              ]
+                          ),
+                          Text(
+                            profile.age,
+                            style: const TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 21,
+                            ),
+                          ),
+                        ],
+                      ),
+
+
+                    ),
+
+                 // ),
+
+                ]
+                ),
+            ),
+          //),
+          //Container(
+           // bottom: 0,
+
+    ]
+            ),
+          ),
+          Container(
+            child:
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+
                 child:Image.network(
-                  (profile.imageAsset),
-                  //placeholder: (context,url) => CircularProgressIndicator(),
+                  (profile.image2),
                   fit: BoxFit.fitHeight,
                 )
             ),
           ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              height: 80,
-              width: 340,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                shadows: <BoxShadow>[
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      profile.name,
-                      style: const TextStyle(
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w800,
-                        fontSize: 21,
-                      ),
-                    ),
 
-                  ],
-                ),
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -428,10 +485,12 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     draggableItems.add(
          Profile(
           name: required.get('name'),
-          imageAsset: (img.get('Img 1')),
+          image1: (img.get('Img 1')),
+          image2: img.get('Img 2'),
           age: '$age',
           sex: required.get('gender'),
           genderpref: required.get('gender_pref'),
+           major: required.get('major'),
 
         )
     );
