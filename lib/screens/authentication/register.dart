@@ -405,6 +405,8 @@ class _GenderState extends State<Gender> {
           .collection('users')
           .doc(userId!).collection('profile').doc('required')
           .set({'gender': gender.trim()}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance.collection(gender.trim()).doc(userId).set({'gender': gender.trim()});
       print('User gender stored successfully.');
     } catch (error) {
       print('Failed to store user gender: $error');

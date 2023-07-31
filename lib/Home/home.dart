@@ -61,7 +61,8 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 580,
+     // borderRadius: BorderRadius.circular(10),
+      height: 680,
       width: 340,
       padding: const EdgeInsets.fromLTRB(0, 40, 00, 00),
 
@@ -70,14 +71,15 @@ class ProfileCard extends StatelessWidget {
         children: [
 
           Container(
-            //height: 580,
-            padding: const EdgeInsets.fromLTRB(0, 0, 00, 15),
+            //height: 680,
+           // padding: const EdgeInsets.fromLTRB(0, 0, 00, 15),
             child: Column(
             children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-
+                //constraints: BoxConstraints(),
                 child: Stack(
+                  //fit: BoxFit.fitHeight,
                 children: <Widget>[
                   Image.network(
                   (profile.image1),
@@ -102,9 +104,9 @@ class ProfileCard extends StatelessWidget {
                         ),
                       ],
                     ),*/
-                    alignment: Alignment.bottomLeft,
+
                     //child: Padding(
-                      padding: const EdgeInsets.only(left: 20, top: 50),
+                      padding: const EdgeInsets.only(left: 20, top: 380),
 
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,13 +114,15 @@ class ProfileCard extends StatelessWidget {
 
                         children: [
                           Row(
+                            //crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
                                   profile.name,
+                                  textAlign:TextAlign.end,
                                   style: const TextStyle(
                                     fontFamily: 'Nunito',
                                     fontWeight: FontWeight.w800,
-                                    fontSize: 21,
+                                    fontSize: 32,
 
                                   ),
                                 ),
@@ -127,36 +131,71 @@ class ProfileCard extends StatelessWidget {
                                   profile.age,
                                   style: const TextStyle(
                                     fontFamily: 'Nunito',
-                                    fontSize: 21,
+                                    fontSize: 30,
                                   ),
                                 ),
                               ]
                           ),
                           Text(
-                            profile.age,
+                            profile.major,
                             style: const TextStyle(
                               fontFamily: 'Nunito',
-                              fontSize: 21,
+                              fontSize: 27,
                             ),
                           ),
                         ],
                       ),
-
-
                     ),
-
                  // ),
-
-                ]
+    ]
                 ),
             ),
-          //),
-          //Container(
-           // bottom: 0,
-
     ]
             ),
           ),
+
+          Container(
+            //padding: const EdgeInsets.only(top: 30),
+
+             height: 80,
+                   width: 340,
+                    alignment: Alignment.topLeft,
+                    decoration: ShapeDecoration(
+                      color: Colors.red.shade200,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      shadows: <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                        ),
+                      ],
+                    ),
+
+            //child: Padding(
+            padding: const EdgeInsets.only(left: 20, ),
+
+            child: Text(
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              //mainAxisAlignment: MainAxisAlignment.center,
+
+
+
+                //Text(
+                  profile.sex,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontSize: 21,
+
+                  ),
+               // ),
+
+            ),
+          ),
+
+
           Container(
             child:
             ClipRRect(
