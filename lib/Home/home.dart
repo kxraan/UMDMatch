@@ -451,6 +451,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
             .doc('test$i').collection('profile').doc('required').
         set({'gender_pref': 'Female'}, SetOptions(merge: true));
 
+        await FirebaseFirestore.instance.collection('Male').doc('test$i').set({'id': 'test$i'});
+
       }else{
         await FirebaseFirestore.instance
             .collection('users')
@@ -461,6 +463,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
             .collection('users')
             .doc('test$i').collection('profile').doc('required').
         set({'gender_pref': 'Male'}, SetOptions(merge: true));
+
+        await FirebaseFirestore.instance.collection('Female').doc('test$i').set({'id': 'test$i'});
       }
 
       await FirebaseFirestore.instance
@@ -504,15 +508,31 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   Future<List<Profile>> initialize() async {
 
-  CollectionReference ref  =  FirebaseFirestore.instance.collection('users');
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+
+    var gender_user =  await FirebaseFirestore.instance.collection('users').doc(userId).collection('profile').doc('required');
+    var gen = await gender_user.get();
+    var gend = gen.data();
+    print(gend);
+    var gender = (gend?['gender_pref']);
+    
+  CollectionReference ref  =  FirebaseFirestore.instance.collection(gender);
   QuerySnapshot users = await ref.get();
-  print(users.size);
 
-  HashMap<String, Profile> data = new HashMap<String, Profile>();
-  List <Profile> da = [];
+  List<String> userIds = [];
+    for(DocumentSnapshot doc in users.docs){
+      userIds.add(doc.get('id'));
+    }
 
-  for (DocumentSnapshot document in users.docs) {
+    CollectionReference ref1 = FirebaseFirestore.instance.collection('users');
+   // QuerySnapshot users1 = await ref1.get();
 
+
+  for (String id in userIds) {
+    DocumentSnapshot document = await ref1.doc(id).get();
     //print(document.id);
     CollectionReference profile = document.reference.collection('profile');
     var required = await profile.doc('required').get();
@@ -548,6 +568,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   void initState() {
     super.initState();
     //deleteFakeACC();
+   // fakeAcc();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -570,7 +591,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   @override
   Widget build(BuildContext context) {
 
-    //fakeAcc();
+
 
     return Stack(
       clipBehavior: Clip.none,
