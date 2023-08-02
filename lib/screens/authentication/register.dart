@@ -7,8 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
-//import 'package:firebase_storage/firebase_storage.dart';
-//import 'package:lib/Models/user.dart';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:lib/Models/user.dart';
+import 'package:lib/screens/authentication/signOut.dart';
 import '../../Home/home.dart';
 //import '../../services/auth.dart';
 import 'auth.dart';
@@ -542,7 +544,9 @@ class _GenderPrefState extends State<GenderPref> {
                   onPressed: () {
                     storeUserGenderPref(dropDownVal);
                     Navigator.push(context,
+
                         MaterialPageRoute(builder: (context) => ImageUploader()));
+
                   },
                   icon: Icon(Icons.arrow_forward),
                   color: Colors.red,
