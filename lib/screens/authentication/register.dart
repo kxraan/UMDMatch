@@ -34,6 +34,7 @@ class _RegisterState extends State<Register> {
   bool _isLoading = false;
   final picker = ImagePicker();
   PickedFile image = PickedFile("");
+  final _formKey = GlobalKey<FormState>();
   Future getimage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     setState(() {
@@ -69,6 +70,13 @@ class _RegisterState extends State<Register> {
       print('Failed to store user name: $error');
     }
   }
+  String? _validateTextField(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +91,6 @@ class _RegisterState extends State<Register> {
         padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: 16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-
           children: [
             Text(
               'Enter Your Name',
@@ -91,52 +98,45 @@ class _RegisterState extends State<Register> {
             ),
             SizedBox(height: 16.0),
             TextFormField(
+              key:formKey,
               controller: nameController,
               keyboardType: TextInputType.name,
               decoration: InputDecoration(
                 labelText: 'Name',
                 border: OutlineInputBorder(),
               ),
-              validator: (value){
-                if(value!.isEmpty) {
-                  return "Enter your name";
-                }else {
-                  return null;
-                }
-              },
+              validator: _validateTextField,
             ),
             SizedBox(height: 16.0),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              const Spacer(),
-              IconButton(
-                onPressed: () {
-                    storeUserName(nameController.text);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => DateofBirth()));
-
-
-                },
-                /*.then((value) async
-                    {
-                      await FirebaseFirestore.instance.collection("users").doc(
-                          value.user.uid).set({
-                        "name": nameController.text.trim()
-                      });
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Spacer(),
+                IconButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      storeUserName(nameController.text);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => DateofBirth()));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please fill in the required field.'),
+                        ),
+                      );
                     }
-                    );
-                  }catch (error) {
-                    print('Failed to store user name: $error');
-                  }
-                },*/
-                icon: Icon(Icons.arrow_forward),
-                color: Colors.red,
-                splashColor: Colors.redAccent,
-              ),
-            ])
+
+                  },
+                  icon: Icon(Icons.arrow_forward),
+                  color: Colors.red,
+                  splashColor: Colors.redAccent,
+                ),
+              ],
+            ),
           ],
         ),
-      ),
-    );
+        ),
+      );
 
   }
 
@@ -146,6 +146,16 @@ class DateofBirth extends StatelessWidget {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController yearController = TextEditingController();
   final TextEditingController monthController = TextEditingController();
+  final formKeyDate = GlobalKey<FormState>();
+  final formKeyYear = GlobalKey<FormState>();
+  final formKeyMonth = GlobalKey<FormState>();
+
+  String? _validateTextField(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    return null;
+  }
 
   Future<void> storeUserDOB(String dob) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
@@ -182,6 +192,7 @@ class DateofBirth extends StatelessWidget {
             ),
             SizedBox(height: 16.0),
             TextFormField(
+              key: formKeyYear,
               controller: yearController,
               keyboardType: TextInputType.datetime,
               decoration: InputDecoration(
@@ -189,9 +200,11 @@ class DateofBirth extends StatelessWidget {
                 hintText: 'YYYY',
                 border: OutlineInputBorder(),
               ),
+              validator: _validateTextField,
             ),
             SizedBox(height: 16.0),
             TextFormField(
+              key: formKeyMonth,
               controller: monthController,
               keyboardType: TextInputType.datetime,
               decoration: InputDecoration(
@@ -199,9 +212,11 @@ class DateofBirth extends StatelessWidget {
                 hintText: 'MM',
                 border: OutlineInputBorder(),
               ),
+              validator: _validateTextField,
             ),
             SizedBox(height: 16.0),
             TextFormField(
+              key: formKeyDate,
               controller: dateController,
               keyboardType: TextInputType.datetime,
               decoration: InputDecoration(
@@ -209,6 +224,7 @@ class DateofBirth extends StatelessWidget {
                 hintText: 'DD',
                 border: OutlineInputBorder(),
               ),
+              validator: _validateTextField,
             ),
             SizedBox(height: 16.0),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -222,10 +238,19 @@ class DateofBirth extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  String dob = yearController.text + "/"+ monthController.text + "/" + dateController.text;
-                  storeUserDOB(dob);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Major()));
+                  if(formKeyDate.currentState!.validate() && formKeyMonth.currentState!.validate() && formKeyYear.currentState!.validate()){
+                    String dob = yearController.text + "/"+ monthController.text + "/" + dateController.text;
+                    storeUserDOB(dob);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Major()));
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Please fill in the required field.'),
+                      ),
+                    );
+                  }
+
                 },
                 icon: Icon(Icons.arrow_forward),
                 color: Colors.red,
@@ -959,28 +984,28 @@ class _PromptsState extends State<Prompts> {
   Future openDialog1() => showDialog(
       context: context,
       builder: (context) => SimpleDialog(
-        title: Text("Choose a Prompt"),
-        children: <Widget>[
-          SimpleDialogOption(
-            onPressed: () {
-              openDialog2(prompt1);
-            },
-            child: Text(prompt1),
-          ),
-          SimpleDialogOption(
-            onPressed: (){
-              openDialog2(prompt1);
-            },
-            child: Text(prompt2),
-          ),
-          SimpleDialogOption(
-            onPressed: () {
-              openDialog2(prompt3);
-            },
-            child: Text(prompt3),
-          )
-        ],
-      ),
+          title: Text("Choose a Prompt"),
+          children: <Widget>[
+            SimpleDialogOption(
+              onPressed: () {
+                openDialog2(prompt1);
+              },
+              child: Text(prompt1),
+            ),
+            SimpleDialogOption(
+              onPressed: (){
+                openDialog2(prompt1);
+              },
+              child: Text(prompt2),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                openDialog2(prompt3);
+              },
+              child: Text(prompt3),
+            )
+          ],
+        ),
   );
 
   Future openDialog2(String prompt) => showDialog(
@@ -1020,6 +1045,15 @@ class _PromptsState extends State<Prompts> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            const SizedBox(height: 16.0,),
+            Text(
+              "Make your profile standout by adding prompts to your profile!",
+               textAlign: TextAlign.center,
+               style: TextStyle(
+                 fontWeight: FontWeight.bold,
+                 fontSize: 20,
+               ),
+            ),
             const SizedBox(height: 16.0,),
             ElevatedButton(
                 onPressed: () async {
