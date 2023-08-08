@@ -1,9 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:lib/screens/chat.dart';
 import 'package:lib/screens/header.dart';
+import 'package:lib/screens/profile.dart';
 
 
+import '../screens/authentication/register.dart';
+import '../screens/custombottomnavigationbar.dart';
 import '../screens/swipe.dart';
 import '../screens/authentication/auth.dart';
 
@@ -536,5 +541,41 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 }
 
 
-
-
+// class _NavigationBar extends StatefulWidget {
+//   @override
+//   _NavigationBarState createState() => _NavigationBarState();
+// }
+//
+// class _NavigationBarState extends State<_NavigationBar> {
+//   int _currentIndex = 0;
+//   final List<Widget> _screens = [
+//     Home(),
+//     ProfilePage(),
+//     Prompts(),
+//   ];
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       bottomNavigationBar: CustomBottomNavigationBar(
+//         currentIndex: _currentIndex,
+//         onTap: (index) {
+//           setState(() {
+//             _currentIndex = index;
+//           });
+//           switch(index) {
+//             case 0:
+//               Navigator.push(context,MaterialPageRoute(builder: (context) => Home()));
+//               break;
+//             case 1:
+//               Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage()));
+//               break;
+//             case 2:
+//               Navigator.push(context, MaterialPageRoute(builder: (context) => Prompts()));
+//               break;
+//           }
+//         },
+//       ),
+//     );
+//   }
+// }
+//

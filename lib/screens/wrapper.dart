@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../Home/home.dart';
 import '../Models/user.dart';
 import 'authentication/signOut.dart';
+import 'custombottomnavigationbar.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -42,7 +43,7 @@ class Wrapper extends StatelessWidget {
            builder:(context, flag) {
              if (flag.hasData) {
                if (flag.data == true) {
-                 return Home()  ;
+                 return NavBar()  ;//Home()
                } else {
                  return Register();
                }

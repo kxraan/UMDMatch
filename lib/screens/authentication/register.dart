@@ -13,6 +13,7 @@ import 'package:lib/Models/user.dart';
 import 'package:lib/screens/authentication/signOut.dart';
 import '../../Home/home.dart';
 //import '../../services/auth.dart';
+import '../custombottomnavigationbar.dart';
 import 'auth.dart';
 import 'image_uploader.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -70,17 +71,17 @@ class _RegisterState extends State<Register> {
       print('Failed to store user name: $error');
     }
   }
-  String? _validateTextField(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'This field is required';
-    }
-    return null;
-  }
+
+  // String? _validateTextField(String? value) {
+  //   if (value == null || value.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)) {
+  //     return 'This field is required';
+  //   }
+  //   return null;
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*TODO validate scaffold */
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("UMD Match"),
@@ -105,7 +106,12 @@ class _RegisterState extends State<Register> {
                 labelText: 'Name',
                 border: OutlineInputBorder(),
               ),
-              validator: _validateTextField,
+              validator:(value){
+                if (value == null || value.isEmpty || !RegExp(r'^[a-z A-Z]+$').hasMatch(value!)) {
+                  return 'This field is required';
+                }
+                return null;
+              },
             ),
             SizedBox(height: 16.0),
             Row(
@@ -238,18 +244,22 @@ class DateofBirth extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  if(formKeyDate.currentState!.validate() && formKeyMonth.currentState!.validate() && formKeyYear.currentState!.validate()){
-                    String dob = yearController.text + "/"+ monthController.text + "/" + dateController.text;
-                    storeUserDOB(dob);
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Major()));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Please fill in the required field.'),
-                      ),
-                    );
-                  }
+                  String dob = yearController.text + "/"+ monthController.text + "/" + dateController.text;
+                  storeUserDOB(dob);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Major()));
+                  // if(formKeyDate.currentState!.validate() && formKeyMonth.currentState!.validate() && formKeyYear.currentState!.validate()){
+                  //   String dob = yearController.text + "/"+ monthController.text + "/" + dateController.text;
+                  //   storeUserDOB(dob);
+                  //   Navigator.push(context,
+                  //       MaterialPageRoute(builder: (context) => Major()));
+                  // } else {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     SnackBar(
+                  //       content: Text('Please fill in the required field.'),
+                  //     ),
+                  //   );
+                  // }
 
                 },
                 icon: Icon(Icons.arrow_forward),
@@ -495,6 +505,7 @@ class GenderPref extends StatefulWidget {
 
 class _GenderPrefState extends State<GenderPref> {
   String dropDownVal = 'Male';
+
   void saveSelectedOptions(List<String> selectedOptions) async {
     try {
       User? currentUser = FirebaseAuth.instance.currentUser;
@@ -541,14 +552,13 @@ class _GenderPrefState extends State<GenderPref> {
               style: TextStyle(fontSize: 24.0),
             ),
             SizedBox(height: 16.0),
-
             MultiSelectDialogField(
-              items:  <String>['Male', 'Female', 'Nonbinary'].map((e) => MultiSelectItem(e, e)).toList(),
+              items: <String>['Male','Female','Nonbinary'].map((e) => MultiSelectItem(e, e)).toList(),
               listType: MultiSelectListType.CHIP,
               initialValue: _selectedOptions,
               onConfirm: (selectedItems) {
                 setState(() {
-                  _selectedOptions = selectedItems;
+                  _selectedOptions = selectedItems ;
                 });
               saveSelectedOptions(_selectedOptions);
               },
@@ -569,9 +579,7 @@ class _GenderPrefState extends State<GenderPref> {
                   onPressed: () {
                     storeUserGenderPref(dropDownVal);
                     Navigator.push(context,
-
                         MaterialPageRoute(builder: (context) => ImageUploader()));
-
                   },
                   icon: Icon(Icons.arrow_forward),
                   color: Colors.red,
@@ -1066,8 +1074,6 @@ class _PromptsState extends State<Prompts> {
                     Icon(Icons.add),
                   ],
                 ),
-
-
             ),
             SizedBox(height: 16.0),
             SizedBox(height: 16.0),
@@ -1079,7 +1085,7 @@ class _PromptsState extends State<Prompts> {
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) =>
-                              Home())); //ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
+                              NavBar())); //ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
                     },
                     child: Text('SKIP'),
 
@@ -1088,7 +1094,7 @@ class _PromptsState extends State<Prompts> {
                     onPressed: () {
                       //try {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Home()));//ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
+                          MaterialPageRoute(builder: (context) => NavBar()));//ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
                     },
                     icon: Icon(Icons.arrow_forward),
                     color: Colors.red,
@@ -1101,4 +1107,129 @@ class _PromptsState extends State<Prompts> {
     );
   }
 }
+
+class Clubs extends StatefulWidget {
+  @override
+  _ClubsState createState() => _ClubsState();
+}
+
+class _ClubsState extends State<Clubs> {
+  String dropDownVal = 'Male';
+
+  List<List<dynamic>> _data = [];
+  Future<List<List<dynamic>>> loadCSV() async {
+    final rawData = await rootBundle.loadString("assets/CSVFiles/organizations.csv");
+    List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);
+    setState(() {
+      _data = listData;
+    });
+    return listData;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadCSV();
+  }
+
+  Future<void> loadCSVData() async {
+    final data = await loadCSV();
+    setState(() {
+      _data = data;
+    });
+  }
+
+  void saveSelectedOptions(List<String> selectedOptions) async {
+
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+      String? currentUserId = currentUser?.uid;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUserId).collection('profile').doc('required')
+          .set({'gender_pref': selectedOptions}, SetOptions(merge: true));
+      print('Selected options stored in Firebase successfully.');
+    } catch (error) {
+      print('Failed to store selected options in Firebase: $error');
+    }
+  }
+
+  Future<void> storeUserClubs(String gender) async {
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? userId = currentUser?.uid;
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId).collection('profile').doc('required')
+          .set({'gender_pref': gender.trim()}, SetOptions(merge: true));
+      print('User gender pref stored successfully.');
+    } catch (error) {
+      print('Failed to store user gender pref: $error');
+    }
+  }
+  List<String> _selectedOptions = [];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("UMD Match"),
+        centerTitle: true,
+        backgroundColor: Colors.red.shade800,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Choose the clubs you are currently involved in',
+              style: TextStyle(fontSize: 24.0),
+            ),
+            SizedBox(height: 16.0),
+            MultiSelectDialogField(
+              items: _data.map((e) => MultiSelectItem(e, e as String)).toList(),
+              listType: MultiSelectListType.CHIP,
+              initialValue: _selectedOptions,
+              onConfirm: (selectedItems) {
+                setState(() {
+                  _selectedOptions = selectedItems.map((e) => (e as String).toString()).toList();
+                  // for(int i = 0; i < selectedItems.length; i ++) {
+                  //   _selectedOptions[i] = selectedItems[i] as String;
+                  // }
+                });
+                saveSelectedOptions(_selectedOptions);
+              },
+            ),
+            SizedBox(height: 48.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back),
+                  color: Colors.red,
+                  splashColor: Colors.redAccent,
+                ),
+                IconButton(
+                  onPressed: () {
+                    storeUserClubs(dropDownVal);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Home()));
+                  },
+                  icon: Icon(Icons.arrow_forward),
+                  color: Colors.red,
+                  splashColor: Colors.redAccent,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
