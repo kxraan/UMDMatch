@@ -1167,6 +1167,7 @@ class _ClubsState extends State<Clubs> {
       print('Failed to store user gender pref: $error');
     }
   }
+
   List<String> _selectedOptions = [];
   @override
   Widget build(BuildContext context) {
