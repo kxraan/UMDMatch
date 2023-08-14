@@ -73,6 +73,11 @@ class _RegisterState extends State<Register> {
           .collection('users')
           .doc(userId!).collection('profile').doc('required')
           .set({'name' : name.trim()}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId!).collection('profile').doc('required')
+          .set({'id' : userId.trim()}, SetOptions(merge: true));
       print('User name stored successfully.');
     } catch (error) {
       print('Failed to store user name: $error');

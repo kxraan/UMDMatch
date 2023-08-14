@@ -25,6 +25,7 @@ class Home extends StatelessWidget {
         body: Stack(
           children:  [
             Header(),
+            //Padding(padding: EdgeInsets.only(top: 30)),
             CardsStackWidget(),
           ],
         ),
@@ -42,6 +43,7 @@ class Profile {
     required this.sex,
     required this.genderpref,
     required this.major,
+    required this.id,
   });
   final String name;
   final String image1;
@@ -50,6 +52,7 @@ class Profile {
   final String sex;
   final String genderpref;
   final String major;
+  final String id;
 }
 
 class ProfileCard extends StatelessWidget {
@@ -64,15 +67,17 @@ class ProfileCard extends StatelessWidget {
      // borderRadius: BorderRadius.circular(10),
       height: 680,
       width: 340,
-      padding: const EdgeInsets.fromLTRB(0, 40, 00, 00),
+      padding: const EdgeInsets.fromLTRB(0, 140, 00, 00),
 
-      child: ListView(
+      child: Stack(
+
 
         children: [
 
+          //Padding(padding: const EdgeInsets.fromLTRB(0, 40, 00, 15)),
           Container(
             //height: 680,
-           // padding: const EdgeInsets.fromLTRB(0, 0, 00, 15),
+
             child: Column(
             children: [
             ClipRRect(
@@ -80,72 +85,55 @@ class ProfileCard extends StatelessWidget {
                 //constraints: BoxConstraints(),
                 child: Stack(
                   //fit: BoxFit.fitHeight,
-                children: <Widget>[
+                children: [
                   Image.network(
-                  (profile.image1),
-                  fit: BoxFit.fitHeight,
+                    (profile.image1),
+                    fit: BoxFit.fitHeight,
 
-                ),
+                  ),
                   Container(
-                    //padding: const EdgeInsets.only(top: 30),
+                    padding: const EdgeInsets.only(left: 20, top: 380),
 
-                  /*  height: 580,
-                   width: 340,
-                    alignment: Alignment.topLeft,
-                    decoration: ShapeDecoration(
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                      shadows: <BoxShadow>[
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 8,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                        Row(
+                          //crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                profile.name,
+                                textAlign:TextAlign.end,
+                                style: const TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 32,
+
+                                ),
+                              ),
+                              Padding(padding: EdgeInsets.only(right: 10.0),),
+                              Text(
+                                profile.age,
+                                style: const TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontSize: 30,
+                                ),
+                              ),
+                            ]
+                        ),
+                        Text(
+                          profile.major,
+                          style: const TextStyle(
+                            fontFamily: 'Nunito',
+                            fontSize: 27,
+                          ),
                         ),
                       ],
-                    ),*/
-
-                    //child: Padding(
-                      padding: const EdgeInsets.only(left: 20, top: 380),
-
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-
-                        children: [
-                          Row(
-                            //crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  profile.name,
-                                  textAlign:TextAlign.end,
-                                  style: const TextStyle(
-                                    fontFamily: 'Nunito',
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 32,
-
-                                  ),
-                                ),
-                                Padding(padding: EdgeInsets.only(right: 10.0),),
-                                Text(
-                                  profile.age,
-                                  style: const TextStyle(
-                                    fontFamily: 'Nunito',
-                                    fontSize: 30,
-                                  ),
-                                ),
-                              ]
-                          ),
-                          Text(
-                            profile.major,
-                            style: const TextStyle(
-                              fontFamily: 'Nunito',
-                              fontSize: 27,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
+                  ),
+
+
                  // ),
     ]
                 ),
@@ -154,7 +142,7 @@ class ProfileCard extends StatelessWidget {
             ),
           ),
 
-          Container(
+        /*  Container(
             //padding: const EdgeInsets.only(top: 30),
 
              height: 80,
@@ -193,10 +181,10 @@ class ProfileCard extends StatelessWidget {
                // ),
 
             ),
-          ),
+          ),*/
 
 
-          Container(
+         /* Container(
             child:
             ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -206,7 +194,7 @@ class ProfileCard extends StatelessWidget {
                   fit: BoxFit.fitHeight,
                 )
             ),
-          ),
+          ),*/
 
         ],
       ),
@@ -214,7 +202,7 @@ class ProfileCard extends StatelessWidget {
   }
 }
 
-enum Swipe { left, right, none }
+enum Swipe { down, up, none }
 
 class ActionButtonWidget extends StatelessWidget {
   const ActionButtonWidget(
@@ -263,7 +251,7 @@ class _DragWidgetState extends State<DragWidget> {
     return Center(
       child: Draggable<int>(
         // Data is the value this Draggable stores.
-        axis: Axis.horizontal,
+        axis: Axis.vertical,
         data: widget.index,
         feedback: Material(
           color: Colors.transparent,
@@ -272,7 +260,7 @@ class _DragWidgetState extends State<DragWidget> {
             builder: (context, swipe, _) {
               return RotationTransition(
                 turns: widget.swipeNotifier.value != Swipe.none
-                    ? widget.swipeNotifier.value == Swipe.left
+                    ? widget.swipeNotifier.value == Swipe.down
                     ?  AlwaysStoppedAnimation(widget.pos! / 360)
                     :  AlwaysStoppedAnimation(widget.pos!/ 360)
                     : const AlwaysStoppedAnimation(0),
@@ -280,7 +268,7 @@ class _DragWidgetState extends State<DragWidget> {
                   children: [
                     ProfileCard(profile: widget.profile),
                     widget.swipeNotifier.value != Swipe.none
-                        ? widget.swipeNotifier.value == Swipe.right
+                        ? widget.swipeNotifier.value == Swipe.up
                         ? Positioned(
                       top: 40,
                       left: 20,
@@ -311,17 +299,17 @@ class _DragWidgetState extends State<DragWidget> {
           ),
         ),
         onDragUpdate: (DragUpdateDetails dragUpdateDetails) {
-          if (dragUpdateDetails.delta.dx > 0 &&
-              dragUpdateDetails.globalPosition.dx >
-                  MediaQuery.of(context).size.width / 2) {
-            widget.swipeNotifier.value = Swipe.right;
-            widget.pos= dragUpdateDetails.delta.dx;
+          if (dragUpdateDetails.delta.dy < 0 &&
+              dragUpdateDetails.globalPosition.dy <
+                  MediaQuery.of(context).size.height / 2) {
+            widget.swipeNotifier.value = Swipe.up;
+            widget.pos= dragUpdateDetails.delta.dy;
           }
-          if (dragUpdateDetails.delta.dx < 0 &&
-              dragUpdateDetails.globalPosition.dx <
-                  MediaQuery.of(context).size.width / 2) {
-            widget.swipeNotifier.value = Swipe.left;
-            widget.pos= dragUpdateDetails.delta.dx;
+          if (dragUpdateDetails.delta.dy > 0 &&
+              dragUpdateDetails.globalPosition.dy >
+                  MediaQuery.of(context).size.height / 2) {
+            widget.swipeNotifier.value = Swipe.down;
+            widget.pos= dragUpdateDetails.delta.dy;
           }
         },
         onDragEnd: (drag) {
@@ -341,7 +329,7 @@ class _DragWidgetState extends State<DragWidget> {
                   ProfileCard(profile: widget.profile),
                   // heck if this is the last card and Swipe is not equal to Swipe.none
                   swipe != Swipe.none && widget.isLastCard
-                      ? swipe == Swipe.right
+                      ? swipe == Swipe.up
                       ? Positioned(
                     top: 40,
                     left: 20,
@@ -429,6 +417,11 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
           .doc('test$i').collection('profile').doc('required')
           .set({'name' : 'test$i'}, SetOptions(merge: true));
 
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('required')
+          .set({'id' : 'test$i'}, SetOptions(merge: true));
+
       DateTime dobDate = DateTime.parse('2003-02-01');
       await FirebaseFirestore.instance
           .collection('users')
@@ -506,6 +499,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     ),*/
   ];
 
+
   Future<List<Profile>> initialize() async {
 
     User? currentUser = await FirebaseAuth.instance.currentUser;
@@ -543,6 +537,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     //print(img.get('Img 1'));
     draggableItems.add(
          Profile(
+          id: required.get('id'),
           name: required.get('name'),
           image1: (img.get('Img 1')),
           image2: img.get('Img 2'),
@@ -557,7 +552,31 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   return draggableItems;
   }
 
+  encountered(Profile profile, Swipe swipe) async {
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
 
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId!).collection('encountered').doc(profile.id)
+        .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+
+    if(swipe == Swipe.down){
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId!).collection('left').doc(profile.id)
+          .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+    }else{
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId!).collection('right').doc(profile.id)
+          .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+    }
+
+
+  }
 
 
 
@@ -596,7 +615,9 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     return Stack(
       clipBehavior: Clip.none,
       children: [
+        Padding(padding: EdgeInsets.only(top: 30)),
         ClipRRect(
+          //padding: ,
           borderRadius: BorderRadius.circular(10),
           child: ValueListenableBuilder(
             valueListenable: swipeNotifier,
@@ -613,7 +634,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                       end: RelativeRect.fromSize(
                           Rect.fromLTWH(
                               swipe != Swipe.none
-                                  ? swipe == Swipe.left
+                                  ? swipe == Swipe.down
                                   ? -300
                                   : 300
                                   : 0,
@@ -629,7 +650,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                       turns: Tween<double>(
                           begin: 0,
                           end: swipe != Swipe.none
-                              ? swipe == Swipe.left
+                              ? swipe == Swipe.down
                               ? -0.1 * 0.3
                               : 0.1 * 0.3
                               : 0.0)
@@ -670,7 +691,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
               children: [
                 ActionButtonWidget(
                   onPressed: () {
-                    swipeNotifier.value = Swipe.left;
+                    swipeNotifier.value = Swipe.down;
                     _animationController.forward();
                   },
                   icon: const Icon(
@@ -681,7 +702,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                 const SizedBox(width: 20),
                 ActionButtonWidget(
                   onPressed: () {
-                    swipeNotifier.value = Swipe.right;
+                    swipeNotifier.value = Swipe.up;
                     _animationController.forward();
                   },
                   icon: const Icon(
@@ -694,7 +715,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
           ),
         ),
         Positioned(
-          left: 0,
+          right: 00,
           child: DragTarget<int>(
             builder: (
                 BuildContext context,
@@ -703,21 +724,24 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                 ) {
               return IgnorePointer(
                 child: Container(
-                  height: 700.0,
-                  width: 80.0,
+                  height: 500.0,
+                  width: 800.0,
                   color: Colors.transparent,
                 ),
               );
             },
             onAccept: (int index) {
               setState(() {
+                encountered(draggableItems[index], Swipe.up);
+                print("righttt");
                 draggableItems.removeAt(index);
               });
             },
           ),
         ),
         Positioned(
-          right: 0,
+          left: 00,
+          top: 500,
           child: DragTarget<int>(
             builder: (
                 BuildContext context,
@@ -726,19 +750,22 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                 ) {
               return IgnorePointer(
                 child: Container(
-                  height: 700.0,
-                  width: 80.0,
+                  height: 600.0,
+                  width: 800.0,
                   color: Colors.transparent,
                 ),
               );
             },
             onAccept: (int index) {
               setState(() {
+                encountered(draggableItems[index], Swipe.down);
+                print("Leftttt");
                 draggableItems.removeAt(index);
               });
             },
           ),
         ),
+
 
       ],
     );
