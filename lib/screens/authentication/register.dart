@@ -56,13 +56,28 @@ class _RegisterState extends State<Register> {
   static final  TextEditingController nameController = TextEditingController();
   Future<void> storeUserName(String name) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+
+
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId!)
+        .set({'email' : email.trim()}, SetOptions(merge: true));
+
     try {
       //DateTime dobDate = DateTime.parse(dob);
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'name' : name.trim()}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId!).collection('profile').doc('required')
+          .set({'id' : userId.trim()}, SetOptions(merge: true));
       print('User name stored successfully.');
     } catch (error) {
       print('Failed to store user name: $error');
@@ -148,12 +163,14 @@ class DateofBirth extends StatelessWidget {
 
   Future<void> storeUserDOB(String dob) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       DateTime dobDate = DateTime.parse(dob);
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'dob': Timestamp.fromDate(dobDate)}, SetOptions(merge: true));
       print('User date of birth stored successfully.');
     } catch (error) {
@@ -170,6 +187,356 @@ class DateofBirth extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.red.shade800,
       ),
+
+    /*  body: Container(
+       // width: 375,
+        //height: 812,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(color: Color(0xFFD44444)),
+        child: Stack(
+          children: [
+            Positioned(
+              left: 57,
+              top: 130,
+              child: Container(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Enter date of birth',
+                      style: TextStyle(
+                        color: Color(0xFFD8C72E),
+                        fontSize: 30,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w700,
+                        height: 1.30,
+                        letterSpacing: -0.30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 70,
+              top: 263,
+              child: Container(width: 217.56, height: 50.35),
+            ),
+            Positioned(
+              left: 59,
+              top: 263,
+              child: Container(
+                width: 48.50,
+                height: 50.35,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Container(
+                        width: 48.50,
+                        height: 50.35,
+                        decoration: ShapeDecoration(
+                          color: Color(0xFFF7F8F9),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(width: 0.50, color: Color(0xFFDADADA)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 10.76,
+                      top: 18.94,
+                      child: SizedBox(
+                        width: 37.74,
+                        height: 15.23,
+                        child: Text(
+                          'MM',
+                          style: TextStyle(
+                            color: Color(0xFF8390A1),
+                            fontSize: 15,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 144,
+              top: 263,
+              child: Container(
+                width: 46.62,
+                height: 50.35,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Container(
+                        width: 46.62,
+                        height: 50.35,
+                        decoration: ShapeDecoration(
+                          color: Color(0xFFF7F8F9),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(width: 0.50, color: Color(0xFFDADADA)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 11.50,
+                      top: 11,
+                      *//*TextFormField(
+                        controller: yearController,
+                        keyboardType: TextInputType.datetime,
+                        decoration: InputDecoration(
+                          labelText: 'Year',
+                          hintText: 'YYYY',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),*//*
+                      child: SizedBox(
+                        width: 30,
+                        height: 25,
+                        child: TextFormField(
+                          controller: dateController,
+                          keyboardType: TextInputType.datetime,
+                          decoration: InputDecoration(
+                           // labelText: 'Year',
+                            hintText: 'DD',
+                            //border: OutlineInputBorder(),
+                          ),
+                          style: TextStyle(
+                            color: Color(0xFF8390A1),
+                            fontSize: 15,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 226,
+              top: 263,
+              child: Container(
+                width: 90.45,
+                height: 50.35,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Container(
+                        width: 90.45,
+                        height: 50.35,
+                        decoration: ShapeDecoration(
+                          color: Color(0xFFF7F8F9),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(width: 0.50, color: Color(0xFFDADADA)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 23.88,
+                      top: 21,
+                      child: SizedBox(
+                        width: 41.18,
+                        height: 13.31,
+                        child: Text(
+                          'YYYY',
+                          style: TextStyle(
+                            color: Color(0xFF8390A1),
+                            fontSize: 15,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 131,
+              top: 266,
+              child: Transform(
+                transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(1.93),
+                child: Container(
+                  width: 48.10,
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1.50,
+                        strokeAlign: BorderSide.strokeAlignCenter,
+                        color: Color(0xFFF8BB15),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 214,
+              top: 266,
+              child: Transform(
+                transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(1.93),
+                child: Container(
+                  width: 48.10,
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1.50,
+                        strokeAlign: BorderSide.strokeAlignCenter,
+                        color: Color(0xFFF8BB15),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 355.30,
+              top: 595.70,
+              child: Transform(
+                transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(3.14),
+                child: Container(
+                  padding: const EdgeInsets.all(15),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 41,
+                        height: 41,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              child: Container(
+                                width: 41,
+                                height: 41,
+                                decoration: ShapeDecoration(
+                                  color: Color(0xFFF8BB15),
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(width: 0.50, color: Color(0xFFD8C72E)),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 11,
+                              top: 10.50,
+                              child: Container(
+                                width: 19,
+                                height: 19,
+                                clipBehavior: Clip.antiAlias,
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                                *//*child: Stack(children: [
+                                    ,
+                                    ]),*//*
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 23,
+              top: 524.35,
+              child: Container(
+                padding: const EdgeInsets.all(15),
+                clipBehavior: Clip.antiAlias,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 41,
+                      height: 41,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            child: Container(
+                              width: 41,
+                              height: 41,
+                              decoration: ShapeDecoration(
+                                color: Color(0xFFF8BB15),
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(width: 0.50, color: Color(0xFFD8C72E)),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 11,
+                            top: 10.50,
+                            child: Container(
+                              width: 19,
+                              height: 19,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                              *//*child: Stack(children: [
+                                  ,
+                                  ]),*//*
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
+*/
+
+
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: 16.0),
         child: Column(
@@ -204,7 +571,7 @@ class DateofBirth extends StatelessWidget {
               controller: dateController,
               keyboardType: TextInputType.datetime,
               decoration: InputDecoration(
-                labelText: 'Date of Birth',
+                labelText: 'Day',
                 hintText: 'DD',
                 border: OutlineInputBorder(),
               ),
@@ -221,7 +588,7 @@ class DateofBirth extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () {
-                  String dob = yearController.text + "/"+ monthController.text + "/" + dateController.text;
+                  String dob = yearController.text + "-"+ monthController.text + "-" + dateController.text;
                   storeUserDOB(dob);
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => Major()));
@@ -235,6 +602,7 @@ class DateofBirth extends StatelessWidget {
         ),
       ),
     );
+
   }
 }
 
@@ -273,11 +641,13 @@ class _MajorState extends State<Major> {
 
   Future<void> storeUserMajor(String major) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'major': major.trim()}, SetOptions(merge: true));
       print('User major stored successfully.');
     } catch (error) {
@@ -383,12 +753,18 @@ class _GenderState extends State<Gender> {
 
   Future<void> storeUserGender(String gender) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'gender': gender.trim()}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance.collection(gender.trim()).doc(userId).set({'id': userId.trim()});
+
+
       print('User gender stored successfully.');
     } catch (error) {
       print('Failed to store user gender: $error');
@@ -472,11 +848,13 @@ class _GenderPrefState extends State<GenderPref> {
 
   Future<void> storeUserGenderPref(String gender) async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('required')
+          .doc(userId!).collection('profile').doc('required')
           .set({'gender_pref': gender.trim()}, SetOptions(merge: true));
       print('User gender pref stored successfully.');
     } catch (error) {
@@ -553,180 +931,5 @@ class _GenderPrefState extends State<GenderPref> {
   }
 }
 
-// class _uploadImg extends StatefulWidget {
-//   @override
-//   _uploadImgState createState() => _uploadImgState();
-// }
-//
-// class _uploadImgState extends State<_uploadImg> {
-//   Uint8List? _image;
-//   void selectImage() async {
-//     Uint8List img = await pickImage(ImageSource.gallery);
-//     setState(() {
-//       _image = img;
-//     });
-//   }
-//   void saveProfile() async{
-//     String resp = await StoreData().saveData(file: _image!);
-//   }
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("UMD Match"),
-//       ),
-//       body: Center(
-//         child: Container(
-//           padding: const EdgeInsets.symmetric(
-//             horizontal: 32,
-//           ),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             children: [
-//               const SizedBox(
-//                 height: 24,
-//               ),
-//               Stack (
-//                 children: [
-//                   _image != null
-//                       ? CircleAvatar(
-//                     radius: 64,
-//                     backgroundImage: MemoryImage(_image!),
-//                   )
-//                       : const CircleAvatar(
-//                     radius: 64,
-//                     backgroundImage: NetworkImage(
-//                         'https://png.pngitem.com/pimgs/s/421-4212266_transparent-default-avatar-png-default-avatar-images-png.png'),
-//                   ),
-//                   Positioned(
-//                     bottom: -10,
-//                     left: 80,
-//                     child: IconButton(
-//                       onPressed: selectImage,
-//                       icon: const Icon(Icons.add_a_photo),
-//                     ),
-//                   )
-//                 ],
-//
-//               ),
-//               const SizedBox(
-//                 height: 24,
-//               ),
-//               ElevatedButton(
-//                 onPressed: saveProfile,
-//                 child: const Text('Save Profile'),
-//               )
-//
-//
-//             ],
-//           ),
-//         ),
-//
-//
-//       ),
-//     );
-//
-//   }
-// }
-
-
-
-// class UserImg extends StatefulWidget {
-//
-//   final Function(String imageUrl) onFileChanged;
-//   UserImg( {
-//     required this.onFileChanged,
-//   });
-//   @override
-//   _UserImgState createState() => _UserImgState();
-//
-//
-// }
-// class _UserImgState extends State<UserImg> {
-//   final ImagePicker _picker = ImagePicker();
-//
-//   String? imageUrl;
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         if(imageUrl == null)
-//           Icon(Icons.image,size: 60,color: Theme.of(context).primaryColor),
-//         if(imageUrl != null)
-//           InkWell(
-//             splashColor: Colors.transparent,
-//             highlightColor: Colors.transparent,
-//             onTap: () => _selectPhoto(),
-//             child: AppRoundImage.url (
-//               imageUrl!,
-//               width:80,
-//               height:80,
-//             ),
-//           ),
-//         InkWell(
-//           onTap: () => _selectPhoto(context),
-//           child: Padding(
-//             padding: EdgeInsets.all(8.0),
-//             child: Text(imageUrl != null? 'Change Photo': 'Select Photo',
-//               style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.bold),
-//             ),
-//           ),
-//         ),
-//
-//       ],
-//     );
-//   }
-// }
-// Future _selectPhoto(context) async {
-//   await showModalBottomSheet (context: context, builder: (context) => BottomSheet (
-//     builder: (context) => Column ( mainAxisSize: MainAxisSize.min, children: [
-//       ListTile(leading: Icon (Icons.camera), title: Text('Camera'), onTap: () {
-//         Navigator.of(context).pop();
-//         _pickImage (ImageSource .camera);
-//       }),
-//       ListTile(leading: Icon(Icons.filter), title: Text('Pick a file'), onTap: () {
-//         Navigator.of(context).pop();
-//         _pickImage(ImageSource.gallery);
-//       }),
-//     ],
-//     ),
-//     onClosing: () {}, )); // BottomSheet
-// }
-//
-//
-// Future _pickImage(ImageSource img) async {
-//   final pickedFile = await _picker.pickImage(source: source, imageQuality: 50);
-//   if(pickedFile == null) {
-//     return;
-//   }
-//   var file = await ImageCropper.cropImage(sourcePath: pickedFile.path, aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1) );
-//   if(file == null) {
-//     return;
-//   }
-//
-//   file = await compressImage(file.path,35) ;
-//   await _uploadFile(file.path);
-//
-// }
-//
-// Future compressImage(String path, int quality) async {
-//   final newPath = p.join((await getTemporaryDirectory()).path,'${DateTime.now()}.${p.extension(path)}');
-//
-//   final result = await FlutterImageCompress.compressAndGetFile(
-//     path, newPath, quality: quality,
-//   );
-//   return result;
-// }
-//
-// Future _uploadFile(String path) async {
-//   final ref = storage.FirebaseStorage.instance.ref().child ('images').child('${DateTime.now().toIso8601String() + p.basename (path)}');
-//
-//   final result = await ref.putFile(File(path));
-//   final fileUrl = await result.ref.getDownloadURL();
-//
-//   setState((){imageUrl = fileUrl;});
-//
-//   widget.onFileChanged(fileUrl);
-// }
 
 

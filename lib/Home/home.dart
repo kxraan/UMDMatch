@@ -1,7 +1,14 @@
+import 'dart:collection';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:lib/screens/header.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lib/screens/splash.dart';
+
+
 
 
 import '../screens/swipe.dart';
@@ -18,6 +25,7 @@ class Home extends StatelessWidget {
         body: Stack(
           children:  [
             Header(),
+            //Padding(padding: EdgeInsets.only(top: 30)),
             CardsStackWidget(),
           ],
         ),
@@ -29,85 +37,172 @@ class Home extends StatelessWidget {
 class Profile {
   const Profile({
     required this.name,
-    required this.imageAsset,
+    required this.image1,
+    required this.image2,
     required this.age,
     required this.sex,
     required this.genderpref,
+    required this.major,
+    required this.id,
   });
   final String name;
-  final String imageAsset;
+  final String image1;
+  final String image2;
   final String age;
   final String sex;
   final String genderpref;
-
+  final String major;
+  final String id;
 }
 
 class ProfileCard extends StatelessWidget {
   const ProfileCard({Key? key, required this.profile}) : super(key: key);
   final Profile profile;
 
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 580,
+     // borderRadius: BorderRadius.circular(10),
+      height: 680,
       width: 340,
-      padding: const EdgeInsets.fromLTRB(0, 30, 00, 15),
+      padding: const EdgeInsets.fromLTRB(0, 140, 00, 00),
 
       child: Stack(
+
+
         children: [
-          Positioned.fill(
-            child: ClipRRect(
+
+          //Padding(padding: const EdgeInsets.fromLTRB(0, 40, 00, 15)),
+          Container(
+            //height: 680,
+
+            child: Column(
+            children: [
+            ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                profile.imageAsset,
-                fit: BoxFit.fitHeight,
-              ),
+                //constraints: BoxConstraints(),
+                child: Stack(
+                  //fit: BoxFit.fitHeight,
+                children: [
+                  Image.network(
+                    (profile.image1),
+                    fit: BoxFit.fitHeight,
+
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(left: 20, top: 380),
+
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                        Row(
+                          //crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                profile.name,
+                                textAlign:TextAlign.end,
+                                style: const TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 32,
+
+                                ),
+                              ),
+                              Padding(padding: EdgeInsets.only(right: 10.0),),
+                              Text(
+                                profile.age,
+                                style: const TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontSize: 30,
+                                ),
+                              ),
+                            ]
+                        ),
+                        Text(
+                          profile.major,
+                          style: const TextStyle(
+                            fontFamily: 'Nunito',
+                            fontSize: 27,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+
+                 // ),
+    ]
+                ),
+            ),
+    ]
             ),
           ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              height: 80,
-              width: 340,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                shadows: <BoxShadow>[
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      profile.name,
-                      style: const TextStyle(
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w800,
-                        fontSize: 21,
+
+        /*  Container(
+            //padding: const EdgeInsets.only(top: 30),
+
+             height: 80,
+                   width: 340,
+                    alignment: Alignment.topLeft,
+                    decoration: ShapeDecoration(
+                      color: Colors.red.shade200,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
                       ),
+                      shadows: <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                        ),
+                      ],
                     ),
 
-                  ],
-                ),
-              ),
+            //child: Padding(
+            padding: const EdgeInsets.only(left: 20, ),
+
+            child: Text(
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              //mainAxisAlignment: MainAxisAlignment.center,
+
+
+
+                //Text(
+                  profile.sex,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontSize: 21,
+
+                  ),
+               // ),
+
             ),
-          ),
+          ),*/
+
+
+         /* Container(
+            child:
+            ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+
+                child:Image.network(
+                  (profile.image2),
+                  fit: BoxFit.fitHeight,
+                )
+            ),
+          ),*/
+
         ],
       ),
     );
   }
 }
 
-enum Swipe { left, right, none }
+enum Swipe { down, up, none }
 
 class ActionButtonWidget extends StatelessWidget {
   const ActionButtonWidget(
@@ -156,7 +251,7 @@ class _DragWidgetState extends State<DragWidget> {
     return Center(
       child: Draggable<int>(
         // Data is the value this Draggable stores.
-        axis: Axis.horizontal,
+        axis: Axis.vertical,
         data: widget.index,
         feedback: Material(
           color: Colors.transparent,
@@ -165,7 +260,7 @@ class _DragWidgetState extends State<DragWidget> {
             builder: (context, swipe, _) {
               return RotationTransition(
                 turns: widget.swipeNotifier.value != Swipe.none
-                    ? widget.swipeNotifier.value == Swipe.left
+                    ? widget.swipeNotifier.value == Swipe.down
                     ?  AlwaysStoppedAnimation(widget.pos! / 360)
                     :  AlwaysStoppedAnimation(widget.pos!/ 360)
                     : const AlwaysStoppedAnimation(0),
@@ -173,7 +268,7 @@ class _DragWidgetState extends State<DragWidget> {
                   children: [
                     ProfileCard(profile: widget.profile),
                     widget.swipeNotifier.value != Swipe.none
-                        ? widget.swipeNotifier.value == Swipe.right
+                        ? widget.swipeNotifier.value == Swipe.up
                         ? Positioned(
                       top: 40,
                       left: 20,
@@ -204,17 +299,17 @@ class _DragWidgetState extends State<DragWidget> {
           ),
         ),
         onDragUpdate: (DragUpdateDetails dragUpdateDetails) {
-          if (dragUpdateDetails.delta.dx > 0 &&
-              dragUpdateDetails.globalPosition.dx >
-                  MediaQuery.of(context).size.width / 2) {
-            widget.swipeNotifier.value = Swipe.right;
-            widget.pos= dragUpdateDetails.delta.dx;
+          if (dragUpdateDetails.delta.dy < 0 &&
+              dragUpdateDetails.globalPosition.dy <
+                  MediaQuery.of(context).size.height / 2) {
+            widget.swipeNotifier.value = Swipe.up;
+            widget.pos= dragUpdateDetails.delta.dy;
           }
-          if (dragUpdateDetails.delta.dx < 0 &&
-              dragUpdateDetails.globalPosition.dx <
-                  MediaQuery.of(context).size.width / 2) {
-            widget.swipeNotifier.value = Swipe.left;
-            widget.pos= dragUpdateDetails.delta.dx;
+          if (dragUpdateDetails.delta.dy > 0 &&
+              dragUpdateDetails.globalPosition.dy >
+                  MediaQuery.of(context).size.height / 2) {
+            widget.swipeNotifier.value = Swipe.down;
+            widget.pos= dragUpdateDetails.delta.dy;
           }
         },
         onDragEnd: (drag) {
@@ -234,7 +329,7 @@ class _DragWidgetState extends State<DragWidget> {
                   ProfileCard(profile: widget.profile),
                   // heck if this is the last card and Swipe is not equal to Swipe.none
                   swipe != Swipe.none && widget.isLastCard
-                      ? swipe == Swipe.right
+                      ? swipe == Swipe.up
                       ? Positioned(
                     top: 40,
                     left: 20,
@@ -309,57 +404,182 @@ class CardsStackWidget extends StatefulWidget {
 class _CardsStackWidgetState extends State<CardsStackWidget>
     with SingleTickerProviderStateMixin {
 
-  initialize() async {
-  var users = await FirebaseFirestore.instance.collection('users').get();
-  for(var user in users.docs){
-    print(user.toString());
-     var profile=   user.data();
-     print (profile);
-     var  req =profile['required'];
+  fakeAcc() async {
 
-    // print(req.data());
+    for(var i=0; i<=25; i++){
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i')
+          .set({'email' : 'test$i@gmail.com'}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('required')
+          .set({'name' : 'test$i'}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('required')
+          .set({'id' : 'test$i'}, SetOptions(merge: true));
+
+      DateTime dobDate = DateTime.parse('2003-02-01');
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('required').
+      set({'dob': Timestamp.fromDate(dobDate)}, SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('required').
+      set({'major': 'Computer Science'}, SetOptions(merge: true));
+
+      if(i%2==0) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('profile').doc('required').
+        set({'gender': 'Male'}, SetOptions(merge: true));
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('profile').doc('required').
+        set({'gender_pref': 'Female'}, SetOptions(merge: true));
+
+        await FirebaseFirestore.instance.collection('Male').doc('test$i').set({'id': 'test$i'});
+
+      }else{
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('profile').doc('required').
+        set({'gender': 'Female'}, SetOptions(merge: true));
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('profile').doc('required').
+        set({'gender_pref': 'Male'}, SetOptions(merge: true));
+
+        await FirebaseFirestore.instance.collection('Female').doc('test$i').set({'id': 'test$i'});
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('images')
+          .set({'Img 1': 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034111.jpg?alt=media&token=c9becec2-eac8-4711-962d-bec6e7018dbf'},  SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('images')
+          .set({'Img 2': 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034180.jpg?alt=media&token=ca39d4c3-1cc2-4628-8acf-208e20644f41'},  SetOptions(merge: true));
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').collection('profile').doc('images')
+          .set({'Img 3': 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034183.jpg?alt=media&token=c91b2de3-a0b2-4523-bfa9-dd10f062dde5'},  SetOptions(merge: true));
+
+        print("Completed $i");
+    }
+
   }
 
-
+  deleteFakeACC() async {
+    for(var i =3; i<=25; i++){
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc('test$i').delete();
+    }
   }
+
   List<Profile> draggableItems = [
-    const Profile(
-        name: 'Irene',
-        imageAsset: 'assets/images/karan1.jpg',
-        age: "19",
-        sex: "Female",
-        genderpref: "Male",
 
-    ),
-    const Profile(
-        name: 'Alice',
-        imageAsset: 'assets/images/karan2.jpg',
-        age: "19",
-        sex: "Female",
-        genderpref: "male",
-    ),
-    const Profile(
-      name: 'Karan',
-      imageAsset: 'assets/images/karan3.jpg',
-      age: "19",
-      sex: "Female",
-      genderpref: "male",
-    ),
-    const Profile(
-      name: 'Krisha',
-      imageAsset: 'assets/images/karan4.jpg',
-      age: "19",
-      sex: "Female",
-      genderpref: "male",
-    ),
-    const Profile(
+    /*const Profile(
       name: 'Zoyah',
-      imageAsset: 'assets/images/karan5.jpg',
+      imageAsset: 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034111.jpg?alt=media&token=c9becec2-eac8-4711-962d-bec6e7018dbf',
       age: "19",
       sex: "Female",
       genderpref: "male",
-    ),
+    ),*/
   ];
+
+
+  Future<List<Profile>> initialize() async {
+
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+
+    var gender_user =  await FirebaseFirestore.instance.collection('users').doc(userId).collection('profile').doc('required');
+    var gen = await gender_user.get();
+    var gend = gen.data();
+    print(gend);
+    var gender = (gend?['gender_pref']);
+    
+  CollectionReference ref  =  FirebaseFirestore.instance.collection(gender);
+  QuerySnapshot users = await ref.get();
+
+  List<String> userIds = [];
+    for(DocumentSnapshot doc in users.docs){
+      
+      userIds.add(doc.get('id'));
+    }
+
+    CollectionReference ref1 = FirebaseFirestore.instance.collection('users');
+   // QuerySnapshot users1 = await ref1.get();
+
+
+  for (String id in userIds) {
+    DocumentSnapshot document = await ref1.doc(id).get();
+    //print(document.id);
+    CollectionReference profile = document.reference.collection('profile');
+    var required = await profile.doc('required').get();
+    var img = await profile.doc('images').get();
+
+    var days = DateTime.now().difference(required.get('dob').toDate()).inDays;
+    var age = days ~/360;
+    //print(img.get('Img 1'));
+    draggableItems.add(
+         Profile(
+          id: required.get('id'),
+          name: required.get('name'),
+          image1: (img.get('Img 1')),
+          image2: img.get('Img 2'),
+          age: '$age',
+          sex: required.get('gender'),
+          genderpref: required.get('gender_pref'),
+           major: required.get('major'),
+
+        )
+    );
+  }
+  return draggableItems;
+  }
+
+  encountered(Profile profile, Swipe swipe) async {
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId!).collection('encountered').doc(profile.id)
+        .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+
+    if(swipe == Swipe.down){
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId!).collection('left').doc(profile.id)
+          .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+    }else{
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId!).collection('right').doc(profile.id)
+          .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+    }
+
+
+  }
+
+
 
   ValueNotifier<Swipe> swipeNotifier = ValueNotifier(Swipe.none);
   late final AnimationController _animationController;
@@ -367,10 +587,17 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   @override
   void initState() {
     super.initState();
+    //deleteFakeACC();
+   // fakeAcc();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
+     initialize().then((value) {
+       setState(() {
+          //draggableItems = value;
+       });
+     });
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         draggableItems.removeLast();
@@ -383,11 +610,15 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   @override
   Widget build(BuildContext context) {
-    initialize();
+
+
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
+        Padding(padding: EdgeInsets.only(top: 30)),
         ClipRRect(
+          //padding: ,
           borderRadius: BorderRadius.circular(10),
           child: ValueListenableBuilder(
             valueListenable: swipeNotifier,
@@ -404,7 +635,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                       end: RelativeRect.fromSize(
                           Rect.fromLTWH(
                               swipe != Swipe.none
-                                  ? swipe == Swipe.left
+                                  ? swipe == Swipe.down
                                   ? -300
                                   : 300
                                   : 0,
@@ -420,7 +651,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                       turns: Tween<double>(
                           begin: 0,
                           end: swipe != Swipe.none
-                              ? swipe == Swipe.left
+                              ? swipe == Swipe.down
                               ? -0.1 * 0.3
                               : 0.1 * 0.3
                               : 0.0)
@@ -461,7 +692,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
               children: [
                 ActionButtonWidget(
                   onPressed: () {
-                    swipeNotifier.value = Swipe.left;
+                    swipeNotifier.value = Swipe.down;
                     _animationController.forward();
                   },
                   icon: const Icon(
@@ -472,7 +703,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                 const SizedBox(width: 20),
                 ActionButtonWidget(
                   onPressed: () {
-                    swipeNotifier.value = Swipe.right;
+                    swipeNotifier.value = Swipe.up;
                     _animationController.forward();
                   },
                   icon: const Icon(
@@ -485,7 +716,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
           ),
         ),
         Positioned(
-          left: 0,
+          right: 00,
           child: DragTarget<int>(
             builder: (
                 BuildContext context,
@@ -494,21 +725,24 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                 ) {
               return IgnorePointer(
                 child: Container(
-                  height: 700.0,
-                  width: 80.0,
+                  height: 500.0,
+                  width: 800.0,
                   color: Colors.transparent,
                 ),
               );
             },
             onAccept: (int index) {
               setState(() {
+                encountered(draggableItems[index], Swipe.up);
+                print("righttt");
                 draggableItems.removeAt(index);
               });
             },
           ),
         ),
         Positioned(
-          right: 0,
+          left: 00,
+          top: 500,
           child: DragTarget<int>(
             builder: (
                 BuildContext context,
@@ -517,19 +751,23 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                 ) {
               return IgnorePointer(
                 child: Container(
-                  height: 700.0,
-                  width: 80.0,
+                  height: 600.0,
+                  width: 800.0,
                   color: Colors.transparent,
                 ),
               );
             },
             onAccept: (int index) {
               setState(() {
+                encountered(draggableItems[index], Swipe.down);
+                print("Leftttt");
                 draggableItems.removeAt(index);
               });
             },
           ),
         ),
+
+
       ],
     );
   }

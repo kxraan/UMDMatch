@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lib/Home/home.dart';
 
 class ImageUploader extends StatefulWidget {
   @override
@@ -21,10 +22,12 @@ class _ImageUploaderState extends State<ImageUploader> {
     Firebase.initializeApp();
   }
 
-  Future<void> _uploadImage(File image) async {
+  Future<void> _uploadImage(File image, var count) async {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
       final fileName = DateTime.now().millisecondsSinceEpoch.toString();
       final Reference reference =
@@ -33,7 +36,7 @@ class _ImageUploaderState extends State<ImageUploader> {
 
       final TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
       final String downloadURL = await taskSnapshot.ref.getDownloadURL();
-      if(_selectedImages.length == 0) {
+      /*if(_selectedImages.length == 0) {
         await firestore.collection('users')
         .doc(userId).collection('profile').doc('User_Images').set({
           'MainImage': downloadURL,
@@ -44,14 +47,15 @@ class _ImageUploaderState extends State<ImageUploader> {
           'Img2': downloadURL,
 
         });
-      }else {
+      }else {*/
+        //print(count);
         await firestore.collection('users')
-            .doc(userId).collection('profile').doc('User_Images').set({
-          'Img3': downloadURL,
+            .doc(userId!).collection('profile').doc('images')
+            .set({'Img $count': downloadURL},  SetOptions(merge: true)
 
-        });
+        );
 
-      }
+      //}
       print('Image uploaded. Download URL: $downloadURL');
     } on FirebaseException catch (e) {
       print('Error uploading image to Firebase: $e');
@@ -122,9 +126,14 @@ class _ImageUploaderState extends State<ImageUploader> {
           ElevatedButton(
             onPressed: () {
               if (_selectedImages.length == 3) {
+                var count = 1;
                 for (final image in _selectedImages) {
-                  _uploadImage(image!);
+                  _uploadImage(image!, count);
+                  count ++;
                 }
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Home()));
+
               } else {
                 print('Please select three images.');
               }

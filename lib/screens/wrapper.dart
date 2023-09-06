@@ -16,11 +16,16 @@ class Wrapper extends StatelessWidget {
 
   Future<bool> check_register() async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
-
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
-      var pref = await FirebaseFirestore.instance.collection('users').doc(
-          userId).collection('profile').doc('required').get();
+
+      /*TODO
+      * Make it full proof. Only checks for required as of now
+      */
+      var pref = await FirebaseFirestore.instance.collection('users')
+          .doc(userId!).collection('profile').doc('images').get();
       return pref.exists;
     }catch (error){
       print('in error');
