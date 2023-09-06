@@ -187,6 +187,356 @@ class DateofBirth extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.red.shade800,
       ),
+
+    /*  body: Container(
+       // width: 375,
+        //height: 812,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(color: Color(0xFFD44444)),
+        child: Stack(
+          children: [
+            Positioned(
+              left: 57,
+              top: 130,
+              child: Container(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Enter date of birth',
+                      style: TextStyle(
+                        color: Color(0xFFD8C72E),
+                        fontSize: 30,
+                        fontFamily: 'Urbanist',
+                        fontWeight: FontWeight.w700,
+                        height: 1.30,
+                        letterSpacing: -0.30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 70,
+              top: 263,
+              child: Container(width: 217.56, height: 50.35),
+            ),
+            Positioned(
+              left: 59,
+              top: 263,
+              child: Container(
+                width: 48.50,
+                height: 50.35,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Container(
+                        width: 48.50,
+                        height: 50.35,
+                        decoration: ShapeDecoration(
+                          color: Color(0xFFF7F8F9),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(width: 0.50, color: Color(0xFFDADADA)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 10.76,
+                      top: 18.94,
+                      child: SizedBox(
+                        width: 37.74,
+                        height: 15.23,
+                        child: Text(
+                          'MM',
+                          style: TextStyle(
+                            color: Color(0xFF8390A1),
+                            fontSize: 15,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 144,
+              top: 263,
+              child: Container(
+                width: 46.62,
+                height: 50.35,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Container(
+                        width: 46.62,
+                        height: 50.35,
+                        decoration: ShapeDecoration(
+                          color: Color(0xFFF7F8F9),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(width: 0.50, color: Color(0xFFDADADA)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 11.50,
+                      top: 11,
+                      *//*TextFormField(
+                        controller: yearController,
+                        keyboardType: TextInputType.datetime,
+                        decoration: InputDecoration(
+                          labelText: 'Year',
+                          hintText: 'YYYY',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),*//*
+                      child: SizedBox(
+                        width: 30,
+                        height: 25,
+                        child: TextFormField(
+                          controller: dateController,
+                          keyboardType: TextInputType.datetime,
+                          decoration: InputDecoration(
+                           // labelText: 'Year',
+                            hintText: 'DD',
+                            //border: OutlineInputBorder(),
+                          ),
+                          style: TextStyle(
+                            color: Color(0xFF8390A1),
+                            fontSize: 15,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 226,
+              top: 263,
+              child: Container(
+                width: 90.45,
+                height: 50.35,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      top: 0,
+                      child: Container(
+                        width: 90.45,
+                        height: 50.35,
+                        decoration: ShapeDecoration(
+                          color: Color(0xFFF7F8F9),
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(width: 0.50, color: Color(0xFFDADADA)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 23.88,
+                      top: 21,
+                      child: SizedBox(
+                        width: 41.18,
+                        height: 13.31,
+                        child: Text(
+                          'YYYY',
+                          style: TextStyle(
+                            color: Color(0xFF8390A1),
+                            fontSize: 15,
+                            fontFamily: 'Urbanist',
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 131,
+              top: 266,
+              child: Transform(
+                transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(1.93),
+                child: Container(
+                  width: 48.10,
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1.50,
+                        strokeAlign: BorderSide.strokeAlignCenter,
+                        color: Color(0xFFF8BB15),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 214,
+              top: 266,
+              child: Transform(
+                transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(1.93),
+                child: Container(
+                  width: 48.10,
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1.50,
+                        strokeAlign: BorderSide.strokeAlignCenter,
+                        color: Color(0xFFF8BB15),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 355.30,
+              top: 595.70,
+              child: Transform(
+                transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(3.14),
+                child: Container(
+                  padding: const EdgeInsets.all(15),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 41,
+                        height: 41,
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              child: Container(
+                                width: 41,
+                                height: 41,
+                                decoration: ShapeDecoration(
+                                  color: Color(0xFFF8BB15),
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(width: 0.50, color: Color(0xFFD8C72E)),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 11,
+                              top: 10.50,
+                              child: Container(
+                                width: 19,
+                                height: 19,
+                                clipBehavior: Clip.antiAlias,
+                                decoration: ShapeDecoration(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                                *//*child: Stack(children: [
+                                    ,
+                                    ]),*//*
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 23,
+              top: 524.35,
+              child: Container(
+                padding: const EdgeInsets.all(15),
+                clipBehavior: Clip.antiAlias,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 41,
+                      height: 41,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: 0,
+                            top: 0,
+                            child: Container(
+                              width: 41,
+                              height: 41,
+                              decoration: ShapeDecoration(
+                                color: Color(0xFFF8BB15),
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(width: 0.50, color: Color(0xFFD8C72E)),
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            left: 11,
+                            top: 10.50,
+                            child: Container(
+                              width: 19,
+                              height: 19,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                              ),
+                              *//*child: Stack(children: [
+                                  ,
+                                  ]),*//*
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      )
+*/
+
+
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: 16.0),
         child: Column(
@@ -252,6 +602,7 @@ class DateofBirth extends StatelessWidget {
         ),
       ),
     );
+
   }
 }
 

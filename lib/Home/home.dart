@@ -518,6 +518,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   List<String> userIds = [];
     for(DocumentSnapshot doc in users.docs){
+      
       userIds.add(doc.get('id'));
     }
 
