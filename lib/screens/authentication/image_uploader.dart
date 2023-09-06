@@ -156,7 +156,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lib/Home/home.dart';
+
 import 'package:lib/screens/authentication/register.dart';
+
 
 class ImageUploader extends StatefulWidget {
   @override
@@ -198,12 +200,14 @@ class _ImageUploaderState extends State<ImageUploader> {
 
         });
       }else {*/
+
       //print(count);
       await firestore.collection('users')
           .doc(userId!).collection('profile').doc('images')
           .set({'Img $count': downloadURL},  SetOptions(merge: true)
 
       );
+
 
       //}
       print('Image uploaded. Download URL: $downloadURL');
@@ -260,6 +264,7 @@ class _ImageUploaderState extends State<ImageUploader> {
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
+
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 40),
@@ -304,6 +309,7 @@ class _ImageUploaderState extends State<ImageUploader> {
           ],
         ),
       )
+
     );
   }
 }

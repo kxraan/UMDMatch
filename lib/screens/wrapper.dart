@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lib/screens/authentication/register.dart';
 import 'package:lib/screens/authentication/sign_in.dart';
 import 'package:lib/screens/header.dart';
+import 'package:lib/screens/splash.dart';
 import 'package:provider/provider.dart';
 
 import '../Home/home.dart';
@@ -16,11 +17,16 @@ class Wrapper extends StatelessWidget {
 
   Future<bool> check_register() async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? userId = currentUser?.uid;
-
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
     try {
-      var pref = await FirebaseFirestore.instance.collection('users').doc(
-          userId).collection('profile').doc('required').get();
+
+      /*TODO
+      * Make it full proof. Only checks for required as of now
+      */
+      var pref = await FirebaseFirestore.instance.collection('users')
+          .doc(userId!).collection('profile').doc('images').get();
       return pref.exists;
     }catch (error){
       print('in error');
@@ -55,7 +61,7 @@ class Wrapper extends StatelessWidget {
                /*TODO
                     Create a laoding page !!!!
                 */
-               return CircularProgressIndicator();
+               return SplashScreen();
 
              }
            });
