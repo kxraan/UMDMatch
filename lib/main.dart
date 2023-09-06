@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lib/screens/authentication/register.dart';
 import 'package:lib/screens/authentication/sign_in.dart';
+import 'package:lib/screens/chat.dart';
 import 'package:lib/screens/custombottomnavigationbar.dart';
 import 'package:lib/screens/splash.dart';
 
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
         value: AuthService().user,
         initialData: null,
         child: MaterialApp(
-          home: Wrapper(),
+          home: ChatPage(userId: 'getkaran', recipientId: 'test2'),
           //SplashScreen(),//Earlier Wrapper()
         )
     );
