@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 class BackgroudCurveWidget extends StatelessWidget {
   const BackgroudCurveWidget({Key? key}) : super(key: key);
@@ -563,3 +564,4 @@ class SwipePage extends StatelessWidget {
     );
   }
 }
+*/

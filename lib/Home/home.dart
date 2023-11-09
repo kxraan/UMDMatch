@@ -568,8 +568,25 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
           await FirebaseFirestore.instance
               .collection('users')
+              .doc(userId!).collection('chat').doc( userId + '&'+ profile.id)
+              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
+
+
+
+          await FirebaseFirestore.instance
+              .collection('users')
               .doc(profile.id).collection('match').doc(userId)
               .set({'id' : userId.trim()}, SetOptions(merge: true));
+
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(profile.id).collection('chat').doc( userId + '&'+ profile.id)
+              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
+
+          await FirebaseFirestore.instance
+              .collection('chats')
+              .doc(userId + '&'+ profile.id)
+              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
 
           break;
         }
