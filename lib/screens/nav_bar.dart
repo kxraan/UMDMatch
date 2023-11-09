@@ -18,7 +18,7 @@ class _NavBarState extends State<NavBar> {
   final tabs = [
     Home(),
     signOut(), //Prompts(),
-    ChatPage(userId: 'getkaran', recipientId: 'test2',),
+    ChatPageList(),
   ];
   @override
   Widget build(BuildContext context) {

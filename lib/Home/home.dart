@@ -455,6 +455,11 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
     User? currentUser = await FirebaseAuth.instance.currentUser;
     String? email = currentUser?.email;
+
+
+    /*
+    TODO what about emails with numbers?
+     */
     var match = RegExp('([a-z]+)').firstMatch(email!);
     String? userId = match?.group(0);
 
