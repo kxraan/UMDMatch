@@ -11,8 +11,12 @@ import 'package:flutter/services.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:lib/Models/user.dart';
 import 'package:lib/screens/authentication/signOut.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import '../../Home/home.dart';
 //import '../../services/auth.dart';
+import '../nav_bar.dart';
 import 'auth.dart';
 import 'image_uploader.dart';
 //import 'auth.dart';
@@ -917,6 +921,486 @@ class _GenderPrefState extends State<GenderPref> {
 
                         MaterialPageRoute(builder: (context) => ImageUploader()));
 
+                  },
+                  icon: Icon(Icons.arrow_forward),
+                  color: Colors.red,
+                  splashColor: Colors.redAccent,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class AboutYourself extends StatefulWidget {
+  @override
+  _AboutYourselfState createState() => _AboutYourselfState();
+}
+
+class _AboutYourselfState extends State<AboutYourself> {
+
+  Future<void> storeAboutYourself(String about, AboutYourself widget) async {
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? userId = getUser();
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId).collection('profile').doc('optional')
+          .set({'aboutyourself': about.trim()}, SetOptions(merge: true));
+      print('User gender pref stored successfully.');
+    } catch (error) {
+      print('Failed to store user gender pref: $error');
+    }
+
+  }
+  String? getUser() {
+    User? currentUser =  FirebaseAuth.instance.currentUser;
+    //String? currentUserId = currentUser?.uid;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+    return userId;
+  }
+  static final  TextEditingController textController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("UMD Match"),
+        centerTitle: true,
+        backgroundColor: Colors.red.shade800,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'About Yourself',
+              style: TextStyle(fontSize: 24.0),
+            ),
+            SizedBox(height: 16.0),
+            TextFormField(
+              controller: textController,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                labelText: 'Tell others more about yourself!',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) =>
+                              Residence())); //ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
+                    },
+                    child: Text('SKIP'),
+
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      //try {
+                      storeAboutYourself(textController.text,widget);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Residence()));//ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
+                    },
+                    icon: Icon(Icons.arrow_forward),
+                    color: Colors.red,
+                    splashColor: Colors.redAccent,
+                  ),
+                ])
+          ],
+
+        ),
+      ),
+    );
+  }
+}
+
+
+class Residence extends StatefulWidget {
+  @override
+  _ResidenceState createState() => _ResidenceState();
+}
+
+class _ResidenceState extends State<Residence> {
+
+  Future<void> storeResidence(String residence, Residence widget) async {
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? userId = getUser();
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId).collection('profile').doc('optional')
+          .set({'residence': residence.trim()}, SetOptions(merge: true));
+      print('User residence stored successfully.');
+    } catch (error) {
+      print('Failed to store user residence: $error');
+    }
+
+  }
+  String? getUser() {
+    User? currentUser =  FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+    return userId;
+  }
+  static final  TextEditingController textController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("UMD Match"),
+        centerTitle: true,
+        backgroundColor: Colors.red.shade800,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Apartment/Residence Hall',
+              style: TextStyle(fontSize: 24.0),
+            ),
+            SizedBox(height: 16.0),
+            TextFormField(
+              controller: textController,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) =>
+                              Prompts())); //ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
+                    },
+                    child: Text('SKIP'),
+
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      //try {
+                      storeResidence(textController.text,widget);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Prompts()));//ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
+                    },
+                    icon: Icon(Icons.arrow_forward),
+                    color: Colors.red,
+                    splashColor: Colors.redAccent,
+                  ),
+                ])
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Prompts extends StatefulWidget {
+  @override
+  _PromptsState createState() => _PromptsState();
+}
+
+class _PromptsState extends State<Prompts> {
+
+  Future<void> storePrompt(String prompt,String promptQues,Prompts widget) async {
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId).collection('profile').doc('optional')
+          .set({ promptQues: prompt.trim()}, SetOptions(merge: true));
+      print('User prompts stored successfully.');
+    } catch (error) {
+      print('Failed to store user prompts: $error');
+    }
+  }
+  String? getUser() {
+    User? currentUser =  FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+    return userId;
+  }
+  String prompt1 = 'My go-to spot to hang out late at night on campus is…..';
+  String prompt2 = 'I believe most Terps are….';
+  String prompt3 = 'Imagine you bump into Testudo on a midnight stroll across campus. What would you say or do?';
+  List<String> prompts = [];
+  List<String> selectedPrompts = [];
+  late TextEditingController textController;
+  bool answered = false;
+  @override
+  void initState() {
+    super.initState();
+    textController = TextEditingController();
+  }
+  @override
+  void dispose() {
+    textController.dispose();
+    super.dispose();
+  }
+  //static final  TextEditingController textController = TextEditingController();
+
+  Future openDialog1() => showDialog(
+    context: context,
+    builder: (context) => SimpleDialog(
+      title: Text("Choose a Prompt"),
+      children: <Widget>[
+        SimpleDialogOption(
+          onPressed: () {
+            openDialog2(prompt1);
+          },
+          child: Text(prompt1),
+        ),
+        SimpleDialogOption(
+          onPressed: (){
+            openDialog2(prompt1);
+          },
+          child: Text(prompt2),
+        ),
+        SimpleDialogOption(
+          onPressed: () {
+            openDialog2(prompt3);
+          },
+          child: Text(prompt3),
+        )
+      ],
+    ),
+  );
+
+  Future openDialog2(String prompt) => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(prompt),
+        content: TextField(
+          autofocus: true,
+          controller: textController,
+          keyboardType: TextInputType.text,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              storePrompt(textController.text, prompt, widget);
+              Navigator.of(context).pop();
+            },
+            child: Text('Done'),
+          )
+        ],
+
+      )
+  );
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("UMD Match"),
+        centerTitle: true,
+        backgroundColor: Colors.red.shade800,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16.0,),
+            Text(
+              "Make your profile standout by adding prompts to your profile!",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            const SizedBox(height: 16.0,),
+            ElevatedButton(
+              onPressed: () async {
+                openDialog1();
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("Add Prompt"),
+                  Icon(Icons.add),
+                ],
+              ),
+            ),
+            SizedBox(height: 16.0),
+            SizedBox(height: 16.0),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //const Spacer(),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) =>
+                              NavBar())); //ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
+                    },
+                    child: Text('SKIP'),
+
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      //try {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Clubs()));//ChatPage(userId:getUser() as String,recipientId: 'getkaran',)
+                    },
+                    icon: Icon(Icons.arrow_forward),
+                    color: Colors.red,
+                    splashColor: Colors.redAccent,
+                  ),
+                ])
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class Clubs extends StatefulWidget {
+  @override
+  _ClubsState createState() => _ClubsState();
+}
+
+class _ClubsState extends State<Clubs> {
+  String dropDownVal = 'Male';
+
+  List<List<dynamic>> _data = [];
+  Future<List<List<dynamic>>> loadCSV() async {
+    final rawData = await rootBundle.loadString("assets/CSVFiles/organizations.csv");
+    List<List<dynamic>> listData = const CsvToListConverter().convert(rawData);
+    setState(() {
+      _data = listData;
+    });
+    return listData;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadCSV();
+  }
+
+  Future<void> loadCSVData() async {
+    final data = await loadCSV();
+    setState(() {
+      _data = data;
+    });
+  }
+
+  void saveSelectedOptions(List<String> selectedOptions) async {
+
+    try {
+      User? currentUser = FirebaseAuth.instance.currentUser;
+
+      String? email = currentUser?.email;
+      var match = RegExp('([a-z]+)').firstMatch(email!);
+      String? userId = match?.group(0);
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId).collection('profile').doc('required')
+          .set({'gender_pref': selectedOptions}, SetOptions(merge: true));
+      print('Selected options stored in Firebase successfully.');
+    } catch (error) {
+      print('Failed to store selected options in Firebase: $error');
+    }
+  }
+
+  Future<void> storeUserClubs(String gender) async {
+    User? currentUser = await FirebaseAuth.instance.currentUser;
+    String? email = currentUser?.email;
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    String? userId = match?.group(0);
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId).collection('profile').doc('optional')
+          .set({'clubs': gender.trim()}, SetOptions(merge: true));
+      print('User clubs stored successfully.');
+    } catch (error) {
+      print('Failed to store user clubs: $error');
+    }
+  }
+
+  List<String> _selectedOptions = [];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("UMD Match"),
+        centerTitle: true,
+        backgroundColor: Colors.red.shade800,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 70.0, horizontal: 16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'Choose the clubs you are currently involved in',
+              style: TextStyle(fontSize: 24.0),
+            ),
+            SizedBox(height: 16.0),
+            MultiSelectDialogField(
+              items: _data.map((e) => MultiSelectItem(e, e as String)).toList(),
+              listType: MultiSelectListType.CHIP,
+              initialValue: _selectedOptions,
+              onConfirm: (selectedItems) {
+                setState(() {
+                  _selectedOptions = selectedItems.map((e) => (e as String).toString()).toList();
+                  // for(int i = 0; i < selectedItems.length; i ++) {
+                  //   _selectedOptions[i] = selectedItems[i] as String;
+                  // }
+                });
+                saveSelectedOptions(_selectedOptions);
+              },
+            ),
+            SizedBox(height: 48.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back),
+                  color: Colors.red,
+                  splashColor: Colors.redAccent,
+                ),
+                IconButton(
+                  onPressed: () {
+                    storeUserClubs(dropDownVal);
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => NavBar()));
                   },
                   icon: Icon(Icons.arrow_forward),
                   color: Colors.red,

@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../Home/home.dart';
 import '../Models/user.dart';
 import 'authentication/signOut.dart';
+import 'nav_bar.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class Wrapper extends StatelessWidget {
     String? email = currentUser?.email;
     var match = RegExp('([a-z]+)').firstMatch(email!);
     String? userId = match?.group(0);
+
     try {
 
       /*TODO
@@ -26,6 +28,7 @@ class Wrapper extends StatelessWidget {
       */
       var pref = await FirebaseFirestore.instance.collection('users')
           .doc(userId!).collection('profile').doc('images').get();
+
       return pref.exists;
     }catch (error){
       print('in error');
@@ -48,7 +51,7 @@ class Wrapper extends StatelessWidget {
            builder:(context, flag) {
              if (flag.hasData) {
                if (flag.data == true) {
-                 return Home()  ;
+                 return NavBar();//Home()  ;
                } else {
                  return Register();
                }

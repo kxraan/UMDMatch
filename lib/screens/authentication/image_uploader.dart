@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lib/Home/home.dart';
+import 'package:lib/screens/authentication/register.dart';
 
 class ImageUploader extends StatefulWidget {
   @override
@@ -132,7 +133,7 @@ class _ImageUploaderState extends State<ImageUploader> {
                   count ++;
                 }
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => Home()));
+                    MaterialPageRoute(builder: (context) => AboutYourself()));
 
               } else {
                 print('Please select three images.');
