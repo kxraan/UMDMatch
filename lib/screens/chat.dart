@@ -341,7 +341,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class ChatPage extends StatefulWidget {
-  final String userId; // The current user's ID
+  final Future<String?> userId; // The current user's ID
   final String recipientId; // The ID of the chat recipient
 
   ChatPage({required this.userId, required this.recipientId});
@@ -393,7 +393,7 @@ class _ChatPageState extends State<ChatPage> {
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
-                  .collection('users').doc(getUser() as String?).collection('chats')
+                  .collection('users').doc(getUser().toString()).collection('chats')
                   .doc(_getChatId())
                   .collection('messages')
                   .orderBy('timestamp', descending: true)
@@ -445,7 +445,7 @@ class _ChatPageState extends State<ChatPage> {
 
   String _getChatId() {
     // Sort the user IDs to ensure the chat ID is consistent for both users
-    List<String> sortedUserIds = [widget.userId, widget.recipientId]..sort();
+    List<String> sortedUserIds = [widget.userId.toString(), widget.recipientId]..sort();
     return sortedUserIds.join('_');
   }
 
@@ -567,7 +567,7 @@ class _ChatPageList extends State<ChatPageList> {
           title: Text(chatNames[index]),
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) =>ChatPage(userId: getUser() as String,recipientId: chatNames[index],) ));
+                MaterialPageRoute(builder: (context) =>ChatPage(userId: getUser() as Future<String?>,recipientId: chatNames[index],) ));
           },
         );
       },

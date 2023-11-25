@@ -1,18 +1,8 @@
-import 'dart:collection';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:lib/screens/header.dart';
+import 'package:lib/screens/widgets/header.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lib/screens/splash.dart';
 
-
-
-
-import '../screens/swipe.dart';
-import '../screens/authentication/auth.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../Home/home.dart';
-import 'authentication/register.dart';
-import 'authentication/signOut.dart';
-import 'chat.dart';
+import '../home.dart';
+import '../authentication/signOut.dart';
+import '../chat.dart';
 import 'header.dart';
-import '../screens/authentication/auth.dart';
+import '../authentication/auth.dart';
 
 class NavBar extends StatefulWidget {
   NavBar({Key? key}) : super(key: key);

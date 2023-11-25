@@ -4,9 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lib/screens/authentication/sign_in.dart';
-import '../../Models/user.dart';
 
+//import '../../Models/user.dart';
 
+class user_data {
+  final String name;
+  user_data({required this.name});
+}
 class AuthService {
   final FirebaseAuth _authen = FirebaseAuth.instance;
 
@@ -83,7 +87,7 @@ class AuthService {
     try{
       /*TODO clear googole cache when signing out*/
       await GoogleSignIn().disconnect();
-       await _authen.signOut();
+       await FirebaseAuth.instance.signOut();
        return SignIn();
     }catch(e){
       print(e.toString());

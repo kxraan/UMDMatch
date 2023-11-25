@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:lib/screens/wrapper.dart';
 import 'package:video_player/video_player.dart';
 
-import 'authentication/sign_in.dart';
+import '../authentication/sign_in.dart';
 
 class SplashScreen extends StatefulWidget {
 
