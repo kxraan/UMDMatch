@@ -1,27 +1,55 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../screens/widgets/constants.dart';
 
+class Message {
+  final String text;
+  final String sender;
+  final Timestamp timestamp; // Assuming you're using Firestore's Timestamp
+
+  Message({
+    required this.text,
+    required this.sender,
+    required this.timestamp,
+  });
+
+  factory Message.fromSnapshot(DocumentSnapshot doc) {
+    // Assuming your document has 'text', 'sender', and 'timestamp' fields
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return Message(
+      text: data['text'],
+      sender: data['sender'],
+      timestamp: data['timestamp'],
+    );
+  }
+}
 
 
 class ChatPage extends StatefulWidget {
-  final Future<String?> userId; // The current user's ID
+  final String userId; // The current user's ID
   final String recipientId; // The ID of the chat recipient
 
   ChatPage({required this.userId, required this.recipientId});
 
   @override
   _ChatPageState createState() => _ChatPageState();
+
 }
 
 class _ChatPageState extends State<ChatPage> {
 
-  Future<String?> getUser() async {
-    User? currentUser = await FirebaseAuth.instance.currentUser;
+  String? getUser() {
+    print(currentUser);
     String? email = currentUser?.email;
+    print(email);
     var match = RegExp('([a-z]+)').firstMatch(email!);
+    print(match);
     String? userId = match?.group(0);
+    print(userId);
 
     return userId;
   }
@@ -57,12 +85,21 @@ class _ChatPageState extends State<ChatPage> {
         children: [
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('users').doc(getUser().toString()).collection('chats')
+              stream: FirebaseFirestore.instance.collection('chats')
                   .doc(_getChatId())
                   .collection('messages')
-                  .orderBy('timestamp', descending: true)
+                  .orderBy('timestamp',descending: true)
                   .snapshots(),
+              //collection('users')
+              // .doc(getUser() as String?)
+              // .collection('chats')
+              // .doc(_getChatId())
+              // .collection('messages')
+              // .orderBy('timestamp', descending: true)
+              // .snapshots(),
+
+
+
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   var messages = snapshot.data!.docs;
@@ -91,10 +128,10 @@ class _ChatPageState extends State<ChatPage> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(hintText: 'Type your message...'),
-                  ),
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: InputDecoration(hintText: 'Type your message...'),
+                    )
                 ),
                 IconButton(
                   onPressed: _sendMessage,
@@ -110,7 +147,7 @@ class _ChatPageState extends State<ChatPage> {
 
   String _getChatId() {
     // Sort the user IDs to ensure the chat ID is consistent for both users
-    List<String> sortedUserIds = [widget.userId.toString(), widget.recipientId]..sort();
+    List<String> sortedUserIds = [widget.userId, widget.recipientId]..sort();
     return sortedUserIds.join('_');
   }
 
@@ -118,9 +155,12 @@ class _ChatPageState extends State<ChatPage> {
     String messageText = _messageController.text.trim();
     if (messageText.isNotEmpty) {
       FirebaseFirestore.instance
-          .collection('users').doc(getUser() as String?).collection('chats')
+          .collection('chats')
           .doc(_getChatId())
           .collection('messages')
+      // .collection('users').doc(getUser() as String?).collection('chats')
+      // .doc(_getChatId())
+      // .collection('messages')
           .add({
         'text': messageText,
         'sender': widget.userId,
@@ -128,6 +168,27 @@ class _ChatPageState extends State<ChatPage> {
       });
       _messageController.clear();
     }
+  }
+  @override
+  void initState() {
+    super.initState();
+
+    // Add a listener for real-time updates
+    FirebaseFirestore.instance
+        .collection('chats')
+        .doc(_getChatId())
+        .collection('messages')
+        .orderBy('timestamp',descending: true)
+        .snapshots()
+        .listen((querySnapshot) {
+      setState(() {
+        List<String?> updatedMessages = [];
+        for (var doc in querySnapshot.docs) {
+          updatedMessages.add(Message.fromSnapshot(doc) as String?);
+        }
+
+      });
+    });
   }
 }
 
@@ -145,7 +206,7 @@ class Bubble extends StatelessWidget {
         padding: EdgeInsets.all(12),
         margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         decoration: BoxDecoration(
-          color: isCurrentUser ? Colors.blue : Colors.grey.shade300,
+          color: isCurrentUser ? Colors.blue : Colors.red,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Text(
@@ -165,7 +226,7 @@ class ChatPageList extends StatefulWidget{
 }
 
 class _ChatPageList extends State<ChatPageList> {
-   List<String> chatNames = [
+  List<String> chatNames = [
 
   ];
   Future<List<String>> user_initialize() async{
@@ -195,7 +256,6 @@ class _ChatPageList extends State<ChatPageList> {
           chat_name = afterAmpersand;
         else
           chat_name = beforeAmpersand;
-
       }
       chatNames.add(chat_name);
       print(chat_name);
@@ -214,29 +274,37 @@ class _ChatPageList extends State<ChatPageList> {
     });
   }
 
-  Future<String?> getUser() async {
-    User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? email = currentUser?.email;
-    var match = RegExp('([a-z]+)').firstMatch(email!);
-    String? userId = match?.group(0);
+  String? getUser()  {
+    print("CORRECT GET USER FUNCTION");
 
+    String? email = currentUser!.email;
+    print(email);
+    var match = RegExp('([a-z]+)').firstMatch(email!);
+    print(match);
+    String? userId = match?.group(0);
+    print(userId);
     return userId;
   }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: chatNames.length,
-      itemBuilder: (context,index){
-        return ListTile(
-          leading: Icon(Icons.person),
-          title: Text(chatNames[index]),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) =>ChatPage(userId: getUser() as Future<String?>,recipientId: chatNames[index],) ));
+        itemCount: chatNames.length,
+        itemBuilder: (context,index){
+          return ListTile(
+            leading: Icon(Icons.person),
+            title: Text(chatNames[index]),
+            onTap: () {
+
+              String? temp = "";
+              temp =  getUser();
+              print(temp);
+              print(chatNames[index]);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) =>ChatPage(userId: temp!,recipientId: chatNames[index],) ));
+            },
+          );
           },
         );
-      },
-    );
-  }
-
+    }
 }
