@@ -1,18 +1,8 @@
-import 'dart:collection';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:lib/screens/header.dart';
+import 'package:lib/screens/widgets/header.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lib/screens/splash.dart';
 
-
-
-
-import '../screens/swipe.dart';
-import '../screens/authentication/auth.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -142,60 +132,6 @@ class ProfileCard extends StatelessWidget {
             ),
           ),
 
-        /*  Container(
-            //padding: const EdgeInsets.only(top: 30),
-
-             height: 80,
-                   width: 340,
-                    alignment: Alignment.topLeft,
-                    decoration: ShapeDecoration(
-                      color: Colors.red.shade200,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                      shadows: <BoxShadow>[
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-
-            //child: Padding(
-            padding: const EdgeInsets.only(left: 20, ),
-
-            child: Text(
-              //crossAxisAlignment: CrossAxisAlignment.start,
-              //mainAxisAlignment: MainAxisAlignment.center,
-
-
-
-                //Text(
-                  profile.sex,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                    fontFamily: 'Nunito',
-                    fontSize: 21,
-
-                  ),
-               // ),
-
-            ),
-          ),*/
-
-
-         /* Container(
-            child:
-            ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-
-                child:Image.network(
-                  (profile.image2),
-                  fit: BoxFit.fitHeight,
-                )
-            ),
-          ),*/
-
         ],
       ),
     );
@@ -273,7 +209,7 @@ class _DragWidgetState extends State<DragWidget> {
                       top: 40,
                       left: 20,
                       child: Transform.rotate(
-                        angle: 12,
+                        angle: 0,
                         child: TagWidget(
                           text: 'LIKE',
                           color: Colors.green[400]!,
@@ -284,7 +220,7 @@ class _DragWidgetState extends State<DragWidget> {
                       top: 50,
                       right: 24,
                       child: Transform.rotate(
-                        angle: -12,
+                        angle: 0,
                         child: TagWidget(
                           text: 'DISLIKE',
                           color: Colors.red[400]!,
@@ -406,7 +342,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
   fakeAcc() async {
 
-    for(var i=0; i<=25; i++){
+    for(var i=1; i<=100; i+=2){
       await FirebaseFirestore.instance
           .collection('users')
           .doc('test$i')
@@ -451,6 +387,11 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
             .collection('users')
             .doc('test$i').collection('profile').doc('required').
         set({'gender': 'Female'}, SetOptions(merge: true));
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc('test$i').collection('right').doc('getkaran').
+        set({'id': 'getkaran'}, SetOptions(merge: true));
 
         await FirebaseFirestore.instance
             .collection('users')
@@ -504,22 +445,49 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
     User? currentUser = await FirebaseAuth.instance.currentUser;
     String? email = currentUser?.email;
+
+
+    /*
+    TODO what about emails with numbers?
+     */
     var match = RegExp('([a-z]+)').firstMatch(email!);
     String? userId = match?.group(0);
 
     var gender_user =  await FirebaseFirestore.instance.collection('users').doc(userId).collection('profile').doc('required');
     var gen = await gender_user.get();
     var gend = gen.data();
-    print(gend);
+
     var gender = (gend?['gender_pref']);
+
+
+    var encountered_data = await FirebaseFirestore.instance.collection('users').doc(userId).collection('encountered');
+    //var enocuntered = encountered_data.data();
+    //print(encountered_data.data?.docs.map((doc) => doc.data()).toList());
+    Map <String, String> encountered_ids = {};
+    QuerySnapshot<Map<String, dynamic>> snapshot = await encountered_data.get();
+
+    /*
+    TODO
+    make it more efficient.
+    right now it is copying the elements into a hashmap and then checking
+     */
+    for (var doc in snapshot.docs) {
+      encountered_ids[doc.data().values.toString()] ='';
+    //encountered_ids.add(doc.data().values.toString());
+    }
+
+
     
   CollectionReference ref  =  FirebaseFirestore.instance.collection(gender);
   QuerySnapshot users = await ref.get();
 
   List<String> userIds = [];
     for(DocumentSnapshot doc in users.docs){
-      
-      userIds.add(doc.get('id'));
+
+      if(!encountered_ids.containsKey('(' + doc.get('id') + ')')) {
+
+        userIds.add(doc.get('id'));
+      }
     }
 
     CollectionReference ref1 = FirebaseFirestore.instance.collection('users');
@@ -574,6 +542,50 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
           .collection('users')
           .doc(userId!).collection('right').doc(profile.id)
           .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+
+      var  right_data = await FirebaseFirestore.instance
+                    .collection('users').doc(profile.id).collection('right');
+
+      QuerySnapshot<Map<String, dynamic>> right_doc = await right_data.get();
+      /*
+    TODO
+    make it more efficient.
+    right now it is copying the elements into a hashmap and then checking
+     */
+      for(var doc in right_doc.docs){
+        if(doc.data().values.toString() == '('+userId+')'){
+          print("its a match");
+
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId!).collection('match').doc(profile.id)
+              .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId!).collection('chat').doc( userId + '&'+ profile.id)
+              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
+
+
+
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(profile.id).collection('match').doc(userId)
+              .set({'id' : userId.trim()}, SetOptions(merge: true));
+
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(profile.id).collection('chat').doc( userId + '&'+ profile.id)
+              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
+
+          await FirebaseFirestore.instance
+              .collection('chats')
+              .doc(userId + '&'+ profile.id)
+              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
+
+          break;
+        }
+      }
     }
 
 
@@ -588,7 +600,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   void initState() {
     super.initState();
     //deleteFakeACC();
-   // fakeAcc();
+    //fakeAcc();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,

@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lib/screens/authentication/register.dart';
 import 'package:lib/screens/authentication/sign_in.dart';
-import 'package:lib/screens/header.dart';
-import 'package:lib/screens/splash.dart';
+import 'package:lib/screens/widgets/header.dart';
+import 'package:lib/screens/registration/name.dart';
+import 'package:lib/screens/widgets/splash.dart';
 import 'package:provider/provider.dart';
 
-import '../Home/home.dart';
-import '../Models/user.dart';
+import 'home.dart';
+import 'authentication/auth.dart';
 import 'authentication/signOut.dart';
+import 'widgets/nav_bar.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -19,16 +20,19 @@ class Wrapper extends StatelessWidget {
     String? email = currentUser?.email;
     var match = RegExp('([a-z]+)').firstMatch(email!);
     String? userId = match?.group(0);
-    try {
 
+    try {
       /*TODO
       * Make it full proof. Only checks for required as of now
       */
+
+      //print(userId);
       var pref = await FirebaseFirestore.instance.collection('users')
           .doc(userId!).collection('profile').doc('images').get();
+
       return pref.exists;
     }catch (error){
-      print('in error');
+      print(error.toString() + 'in error');
       return false;
     }
   }
@@ -48,9 +52,10 @@ class Wrapper extends StatelessWidget {
            builder:(context, flag) {
              if (flag.hasData) {
                if (flag.data == true) {
-                 return Home()  ;
+                 return NavBar();//Home()  ;
                } else {
-                 return Register();
+                 //print("here--------------------------");
+                 return Name();
                }
              }else{
                /*TODO
