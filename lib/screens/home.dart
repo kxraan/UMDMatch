@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:lib/screens/widgets/header.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'matched.dart';
+
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -583,6 +585,41 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
               .doc(userId + '&'+ profile.id)
               .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
 
+          // Getting matched images
+          var snapshot = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .collection('profile');
+          var snapshotImg = await snapshot.doc('images')
+              .get();
+
+          var snapshot_other = await FirebaseFirestore.instance
+              .collection('users')
+              .doc(profile.id)
+              .collection('profile');
+          var snapshotImg_other = await snapshot_other.doc('images')
+              .get();
+
+
+          //Navigator.push(context, MatchedScreen(myProfilePhotoPath: myProfilePhotoPath, myUserId: myUserId, otherUserProfilePhotoPath: otherUserProfilePhotoPath, otherUserId: otherUserId))
+
+          Navigator.push(
+            context,
+            new MaterialPageRoute(
+              builder: (context) => new MatchedScreen(myProfilePhotoPath: snapshotImg['Img 1'],
+                  myUserId: userId,
+                  otherUserProfilePhotoPath: snapshotImg_other['Img 1'],
+                  otherUserId: profile.id),
+            ),
+          );
+
+        /*  Navigator.pushNamed(context, MatchedScreen.id, arguments: {
+            "myUserId": userId,
+            "myProfilePhotoPath": snapshotImg['Img 1'],
+            "otherUserId": profile.id,
+            "otherUserProfilePhotoPath": snapshotImg_other['Img 1']
+          });
+*/
           break;
         }
       }

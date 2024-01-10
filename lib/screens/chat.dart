@@ -32,7 +32,7 @@ class Message {
 class ChatPage extends StatefulWidget {
   final String userId; // The current user's ID
   final String recipientId; // The ID of the chat recipient
-
+  static const String id  = 'chat';
   ChatPage({required this.userId, required this.recipientId});
 
   @override
@@ -258,7 +258,7 @@ class _ChatPageList extends State<ChatPageList> {
           chat_name = beforeAmpersand;
       }
       chatNames.add(chat_name);
-      print(chat_name);
+    //  print(chat_name);
     }
 
     return chatNames;

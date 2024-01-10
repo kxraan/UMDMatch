@@ -36,21 +36,23 @@ class _ProfilePageState extends State<ProfilePage> {
       var snapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
-          .collection('profile')
-          .doc('required')
+          .collection('profile');
+
+      var snap = await snapshot.doc('required').get();
+
+     // var snap = await snapshot.get();
+
+      var snapshot1 = snap.data();
+
+      var snapshotImg = await snapshot.doc('images')
           .get();
 
-      var snapshotImg = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .collection('profile')
-          .doc('images')
-          .get();
-
-      if (snapshot.exists) {
+      if (snapshot1!.isNotEmpty) {
         setState(() {
-          userName = snapshot['name'];
-          userEmail = snapshot['email'];
+         // print('hereeee');
+          print(snapshot1['email']);
+          userName = snapshot1['name'];
+          userEmail = userId + '@terpmail.umd.edu';
         });
       } else {
         print('Document does not exist');
@@ -58,6 +60,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       if (snapshotImg.exists) {
         setState(() {
+          print('hereee');
+          print( snapshotImg['Img 1']);
           userImgUrl = snapshotImg['Img 1'];
         });
       } else {
@@ -96,8 +100,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<String?> getCurrentUserId() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        String userId = user.uid;
+      String? email = user?.email;
+      var match = RegExp('([a-z]+)').firstMatch(email!);
+      String? userId = match?.group(0);
+
+      if (userId != null) {
+       // String userId = userId;
+
         return userId;
       } else {
         return null;
