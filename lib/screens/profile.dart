@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+
+import '../database/app_user.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,6 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late String userEmail = "";
   late String userImgUrl = "";
 
+/*
   Future<void> fetchUserInfo() async {
     if (userId == null) {
       print("User ID is not available yet.");
@@ -71,6 +75,7 @@ class _ProfilePageState extends State<ProfilePage> {
       print('Error fetching user information: $e');
     }
   }
+*/
 
   // @override
   // void initState() {
@@ -85,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
   //
   //   });
   // }
-  @override
+ /* @override
   void initState() {
     super.initState();
     getCurrentUserId().then((uid) {
@@ -95,8 +100,8 @@ class _ProfilePageState extends State<ProfilePage> {
       fetchUserInfo();
     });
   }
-
-
+*/
+/*
   Future<String?> getCurrentUserId() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -115,10 +120,13 @@ class _ProfilePageState extends State<ProfilePage> {
       print("Error getting current user ID: $e");
       return null;
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
+
+    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -139,9 +147,9 @@ class _ProfilePageState extends State<ProfilePage> {
           Center(
             child: CircleAvatar(
               radius: 60,
-              backgroundImage: userImgUrl.isNotEmpty
-                  ? NetworkImage(userImgUrl) as ImageProvider<Object>?
-                  : AssetImage("assets/images/karan1.jpg"),
+              backgroundImage: /*userImgUrl.isNotEmpty
+                  ?*/ NetworkImage(appUser.images?['Img 1'])
+                  //: AssetImage("assets/images/karan1.jpg"),
             ),
           ),
           SizedBox(height: 20),
@@ -151,12 +159,12 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Name: $userName",
+                  "Name: " + appUser.required?['name'],
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Email: $userEmail",
+                  "Email: " + appUser.id,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
@@ -167,8 +175,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditProfilePage(
-                          currentName: userName,
-                          currentEmail: userEmail,
+                          currentName: appUser.required?['name'],
+                          currentEmail: appUser.id,
                           onUpdate: (newName, newEmail) {
                             // Update the user information
                             setState(() {

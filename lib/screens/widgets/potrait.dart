@@ -1,10 +1,12 @@
+
+
 import 'package:flutter/material.dart';
 
 class Portrait extends StatelessWidget {
-  final String imageUrl;
+  final ImageInfo imageInfo;
   final double height;
 
-  Portrait({required this.imageUrl, this.height = 225.0});
+  Portrait({required this.imageInfo, this.height = 225.0});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +18,12 @@ class Portrait extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(25.0))),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(22.0),
-        child: imageUrl.isNotEmpty
-            ? Image.network(imageUrl, fit: BoxFit.fitHeight)
-            : null,
+        child:
+            RawImage(
+          image: imageInfo.image,
+          fit: BoxFit.fitHeight,
+        )
+
       ),
     );
   }

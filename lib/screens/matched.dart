@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:lib/screens/widgets/potrait.dart';
 import 'package:lib/screens/widgets/rounded_button.dart';
 import 'package:lib/screens/widgets/rounded_outlined_button.dart';
+import 'package:provider/provider.dart';
+import '../database/app_user.dart';
 import 'chat.dart';
 
 class MatchedScreen extends StatelessWidget {
   static const String id = '/matched_screen';
 
-  final String myProfilePhotoPath;
+  final ImageInfo myProfilePhotoPath;
   final String myUserId;
-  final String otherUserProfilePhotoPath;
+  final ImageInfo otherUserProfilePhotoPath;
   final String otherUserId;
 
   MatchedScreen(
@@ -20,8 +22,12 @@ class MatchedScreen extends StatelessWidget {
 
   void sendMessagePressed(BuildContext context) async {
 
+    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
 
-
+    /**
+     * TODO: chat gets added in moth the user only if 'send message' is selected
+     */
+    await appUser.start_chat(this.otherUserId);
 
     Navigator.pop(context);
 
@@ -61,8 +67,8 @@ class MatchedScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Portrait(imageUrl: myProfilePhotoPath),
-                    Portrait(imageUrl: otherUserProfilePhotoPath)
+                    Portrait(imageInfo: myProfilePhotoPath),
+                    Portrait(imageInfo: otherUserProfilePhotoPath)
                   ],
                 ),
               ),

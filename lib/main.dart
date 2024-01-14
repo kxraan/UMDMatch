@@ -8,7 +8,7 @@ import 'package:lib/screens/widgets/splash.dart';
 //import 'package:lib/firebase_options.dart';
 
 import 'package:provider/provider.dart';
-
+import 'database/app_user.dart';
 import 'screens/home.dart';
 import 'screens/wrapper.dart';
 import 'screens/authentication/auth.dart';
@@ -17,7 +17,7 @@ void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
   await  Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp( MyApp());
 
 }
 /*async {
@@ -28,16 +28,24 @@ void main() async{
   runApp(const MyApp());
 }*/
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
 
+  final AppUser appUser = AppUser();
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<user_data?>.value(
-        value: AuthService().user,
-        initialData: null,
-        child: MaterialApp(
-          home:SplashScreen(),//Earlier Wrapper()
-        )
+    return MultiProvider(
+      providers: [
+        StreamProvider<user_data?>.value(
+          value: AuthService().user,
+          initialData: null,
+        ),
+        ChangeNotifierProvider<AppUser>.value(
+          value: appUser, // Provide the AppUser instance
+        ),
+      ],
+      child: MaterialApp(
+        home: SplashScreen(), // Earlier Wrapper()
+      ),
     );
   }
 }
