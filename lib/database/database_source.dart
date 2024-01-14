@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lib/database/user_options.dart';
 
 import '../screens/widgets/constants.dart';
 
@@ -94,25 +95,47 @@ class FirebaseDatabase{
         .set({'id' : userId!.trim()}, SetOptions(merge: true));
   }
 
-  start_chat(String userId, String chatId){
+  start_chat(String userId, String userName, String userImage, UserOptions option){
 
     var actualId = '';
-    if(userId.compareTo(chatId) < 0){
-      actualId = userId + '&' + chatId;
+    if(userId.compareTo(option.id) < 0){
+      actualId = userId + '&' + option.id;
     }else{
-      actualId = chatId + '&' + userId;
+      actualId = option.id + '&' + userId;
     }
 
 
     instance
         .collection('users')
         .doc(userId).collection('chat').doc( actualId)
-        .set({'id' :chatId}, SetOptions(merge: true));
+        .set({'id' :option.id}, SetOptions(merge: true));
 
     instance
         .collection('users')
-        .doc(chatId).collection('chat').doc( actualId)
+        .doc(userId).collection('chat').doc( actualId)
+        .set({'recipient_name' :option.required['name']}, SetOptions(merge: true));
+
+    instance
+        .collection('users')
+        .doc(userId).collection('chat').doc( actualId)
+        .set({'recipient_profile' :option.images['Img 1']}, SetOptions(merge: true));
+
+
+    instance
+        .collection('users')
+        .doc(option.id).collection('chat').doc( actualId)
         .set({'id' : userId}, SetOptions(merge: true));
+
+    instance
+        .collection('users')
+        .doc(option.id).collection('chat').doc( actualId)
+        .set({'recipient_name' :userName}, SetOptions(merge: true));
+
+    instance
+        .collection('users')
+        .doc(option.id).collection('chat').doc( actualId)
+        .set({'recipient_profile' :userImage}, SetOptions(merge: true));
+
 
 
   }

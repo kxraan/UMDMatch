@@ -129,8 +129,8 @@ class AppUser extends ChangeNotifier {
     //print(matches);
   }
 
-  start_chat(String id){
-    _fb.start_chat(this.id, id);
+  start_chat(UserOptions option){
+    _fb.start_chat(this.id, required?['name'], images?['Img 1'] ,option);
   }
 
 

@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:lib/database/user_options.dart';
 import 'package:lib/screens/widgets/chat_bubble.dart';
 import 'package:provider/provider.dart';
 import '../database/app_user.dart';
@@ -34,15 +36,18 @@ class Message {
 class ChatPage extends StatefulWidget {
   final String userId; // The current user's ID
   final String recipientId; // The ID of the chat recipient
+  final String name;
+  final String image;
 
-  ChatPage({required this.userId, required this.recipientId});
+  ChatPage({required this.userId, required this.recipientId, required this.name, required
+  this.image});
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  String _recipientName  = '';
+  //String _recipientName  = option.required['name'];
   List<DocumentSnapshot> _messages = [];
   DocumentSnapshot? _lastDocument;
   bool _hasMoreMessages = true;
@@ -55,7 +60,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    _fetchRecipientName();
+   // _fetchRecipientName();
     _scrollController.addListener(_scrollListener);
     _loadInitialMessages();
   }
@@ -66,18 +71,6 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
-  Future<void> _fetchRecipientName() async {
-    try {
-      DocumentSnapshot reqdDoc = await FirebaseFirestore.instance.collection('users')
-          .doc(widget.recipientId).collection('profile').doc('required').get();
-      String name = reqdDoc.get('name');
-      setState(() {
-        _recipientName  = name;
-      });
-    } catch (e) {
-      print('Error fetching recipient name: $e');
-    }
-  }
 
   void _scrollListener() {
     if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
@@ -173,7 +166,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_recipientName.isNotEmpty ? _recipientName : 'Loading...'),
+        title: Text(widget.name.isNotEmpty ? widget.name: 'Loading...'),
         backgroundColor: Colors.red,
       ),
       body: Column(
@@ -229,16 +222,92 @@ class ChatPageList extends StatefulWidget {
   State<ChatPageList> createState() => _ChatPageList();
 }
 
+/**
+ * TODO: Pagination and Real-time updates work but
+ * Real time update only works for the first 15 chats, so we need to work on tthat
+ * and modify it accordingly
+ * SOLUTION -> Add a chat provider to handle all chats!!
+ */
+
 class _ChatPageList extends State<ChatPageList> {
-  List<ChatMetadata> chats = []; // List to hold chat metadata
+
+  List<ChatMetadata> chats = [];
+  DocumentSnapshot? _lastDocument;
+  bool _hasMoreChats = true;
+  final int _chatsPerPage = 15;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _loadChats();
+    _scrollController.addListener(_scrollListener);
+    _listenForRecentChats();
   }
 
-  Future<void> _loadChats() async {
+  void _scrollListener() {
+    if (_scrollController.offset >=
+        _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange && _hasMoreChats) {
+      _loadMoreChats();
+    }
+  }
+
+
+  void _listenForRecentChats() {
+    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+
+    FirebaseFirestore.instance.collection('users').doc(appUser.id).collection(
+        'chat')
+        .orderBy('lastMessageTimestamp', descending: true)
+        .limit(_chatsPerPage)
+        .snapshots().listen((snapshot) {
+      List<ChatMetadata> newChats = [];
+      for (var doc in snapshot.docs) {
+        newChats.add(ChatMetadata.fromDocument(doc, appUser.id));
+      }
+
+      setState(() {
+        chats = newChats;
+        _lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+      });
+    });
+  }
+
+  Future<void> _loadMoreChats() async {
+    if (_lastDocument == null) return;
+
+    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+
+    var query = FirebaseFirestore.instance.collection('users').doc(appUser.id)
+        .collection('chat')
+        .orderBy('lastMessageTimestamp', descending: true)
+        .startAfterDocument(_lastDocument!)
+        .limit(_chatsPerPage);
+
+    QuerySnapshot<Map<String, dynamic>> chatSnapshot = await query.get();
+
+    if (chatSnapshot.docs.isNotEmpty) {
+      _lastDocument = chatSnapshot.docs.last;
+      if (chatSnapshot.docs.length < _chatsPerPage) {
+        _hasMoreChats = false;
+      }
+
+      List<ChatMetadata> fetchedChats = [];
+      for (var doc in chatSnapshot.docs) {
+        fetchedChats
+            .add(ChatMetadata.fromDocument(doc, appUser.id));
+      }
+      if (mounted) {
+        setState(() {
+          chats.addAll(fetchedChats);
+        });
+      }
+    } else {
+      _hasMoreChats = false;
+    }
+  }
+
+/*  Future<void> _loadChats() async {
     final AppUser appUser = Provider.of<AppUser>(context, listen: false);
 
     // Fetch chats and order by last message timestamp
@@ -258,40 +327,76 @@ class _ChatPageList extends State<ChatPageList> {
         chats = fetchedChats;
       });
     }
+  }*/
+
+
+  Future<void> _loadChats() async {
+    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+
+    var query = FirebaseFirestore.instance
+        .collection('users').doc(appUser.id).collection('chat')
+        .orderBy('lastMessageTimestamp', descending: true)
+        .limit(_chatsPerPage);
+
+    if (_lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+
+    QuerySnapshot<Map<String, dynamic>> chatSnapshot = await query.get();
+
+    if (chatSnapshot.docs.isNotEmpty) {
+      _lastDocument = chatSnapshot.docs.last;
+      if (chatSnapshot.docs.length < _chatsPerPage) {
+        _hasMoreChats = false;
+      }
+
+      List<ChatMetadata> fetchedChats = [];
+      for (var doc in chatSnapshot.docs) {
+        fetchedChats.add(ChatMetadata.fromDocument(doc, appUser.id));
+      }
+
+      if (mounted) {
+        setState(() {
+          chats.addAll(fetchedChats);
+        });
+      }
+    } else {
+      _hasMoreChats = false;
+    }
   }
 
 
   @override
   Widget build(BuildContext context) {
-    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: _hasMoreChats ? chats.length + 1 : chats.length,
+      // +1 for the loading indicator
+      itemBuilder: (context, index) {
+        // Check if the last item is reached
+        if (index == chats.length && _hasMoreChats) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('users').doc(appUser.id).collection('chat')
-          .orderBy('lastMessageTimestamp', descending: true)
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<ChatMetadata> chats = snapshot.data!.docs
-              .map((doc) => ChatMetadata.fromDocument(doc, appUser.id))
-              .toList();
-
-          return ListView.builder(
-            itemCount: chats.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                leading: Icon(Icons.person),
-                title: Text(chats[index].chatPartnerId),
-                subtitle: Text(chats[index].lastMessageText),
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatPage(userId: appUser.id, recipientId: chats[index].chatPartnerId)));
-                },
-              );
+        // Return each chat item
+        if (index < chats.length) {
+          ChatMetadata chat = chats[index];
+          return ListTile(
+            leading: Icon(Icons.person),
+            title: Text(chat.name),
+            subtitle: Text(chat.lastMessageText),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ChatPage(
+                      userId: chat.userId,
+                      recipientId: chat.chatPartnerId,
+                      name: chat.name,
+                      image: chat.image)));
             },
           );
         } else {
-          return Center(child: CircularProgressIndicator());
+          return SizedBox
+              .shrink(); // Placeholder for the last item if no more chats are available
         }
       },
     );
@@ -304,25 +409,30 @@ class ChatMetadata {
   final String userId;
   final String chatPartnerId;
   final String lastMessageText;
-  final Timestamp lastMessageTimestamp;
+  final Timestamp? lastMessageTimestamp;
+  final String name;
+  final String image;
 
   ChatMetadata({
     required this.userId,
     required this.chatPartnerId,
     required this.lastMessageText,
-    required this.lastMessageTimestamp,
+     this.lastMessageTimestamp,
+   required this.name,
+    required this.image,
   });
 
-  factory ChatMetadata.fromDocument(DocumentSnapshot doc, String userId) {
+ factory ChatMetadata.fromDocument(DocumentSnapshot doc, String userId)  {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    //final AppUser appUser = Provider.of<AppUser>(context, listen: false);
 
     return ChatMetadata(
+        name: data['recipient_name'],
+        image: data['recipient_profile'],
         userId: userId, // Adjust these fields based on your Firestore structure
         chatPartnerId: data['id'],
-        lastMessageText: data['lastMessage'],
-        lastMessageTimestamp: data['lastMessageTimestamp'],
+        lastMessageText: data['lastMessage']?? '',
+        lastMessageTimestamp: data['lastMessageTimestamp'] as Timestamp?,
     );
   }
 }
