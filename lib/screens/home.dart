@@ -2,6 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lib/screens/widgets/header.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lib/screens/wrapper.dart';
+import 'package:provider/provider.dart';
+
+import '../database/app_user.dart';
+import '../database/user_options.dart';
+import 'matched.dart';
 
 
 class Home extends StatelessWidget {
@@ -26,6 +32,7 @@ class Home extends StatelessWidget {
 
 class Profile {
   const Profile({
+    required this.option,
     required this.name,
     required this.image1,
     required this.image2,
@@ -34,15 +41,18 @@ class Profile {
     required this.genderpref,
     required this.major,
     required this.id,
+    required this.match
   });
+  final UserOptions option;
   final String name;
-  final String image1;
-  final String image2;
+  final ImageInfo image1;
+  final ImageInfo image2;
   final String age;
   final String sex;
   final String genderpref;
   final String major;
   final String id;
+  final bool match;
 }
 
 class ProfileCard extends StatelessWidget {
@@ -76,10 +86,14 @@ class ProfileCard extends StatelessWidget {
                 child: Stack(
                   //fit: BoxFit.fitHeight,
                 children: [
-                  Image.network(
+                  /*Image.network(
                     (profile.image1),
                     fit: BoxFit.fitHeight,
 
+                  ),*/
+                  RawImage(
+                    image: profile.image1.image,
+                    fit: BoxFit.fitHeight
                   ),
                   Container(
                     padding: const EdgeInsets.only(left: 20, top: 380),
@@ -429,165 +443,120 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     }
   }
 
-  List<Profile> draggableItems = [
-
-    /*const Profile(
-      name: 'Zoyah',
-      imageAsset: 'https://firebasestorage.googleapis.com/v0/b/umd-match.appspot.com/o/images%2F1690397034111.jpg?alt=media&token=c9becec2-eac8-4711-962d-bec6e7018dbf',
-      age: "19",
-      sex: "Female",
-      genderpref: "male",
-    ),*/
-  ];
+  List<Profile> draggableItems = [];
 
 
   Future<List<Profile>> initialize() async {
 
-    User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? email = currentUser?.email;
+    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
 
+    //CollectionReference ref1 = FirebaseFirestore.instance.collection('users');
 
-    /*
-    TODO what about emails with numbers?
-     */
-    var match = RegExp('([a-z]+)').firstMatch(email!);
-    String? userId = match?.group(0);
+  int i =0;
 
-    var gender_user =  await FirebaseFirestore.instance.collection('users').doc(userId).collection('profile').doc('required');
-    var gen = await gender_user.get();
-    var gend = gen.data();
-
-    var gender = (gend?['gender_pref']);
-
-
-    var encountered_data = await FirebaseFirestore.instance.collection('users').doc(userId).collection('encountered');
-    //var enocuntered = encountered_data.data();
-    //print(encountered_data.data?.docs.map((doc) => doc.data()).toList());
-    Map <String, String> encountered_ids = {};
-    QuerySnapshot<Map<String, dynamic>> snapshot = await encountered_data.get();
-
-    /*
-    TODO
-    make it more efficient.
-    right now it is copying the elements into a hashmap and then checking
-     */
-    for (var doc in snapshot.docs) {
-      encountered_ids[doc.data().values.toString()] ='';
-    //encountered_ids.add(doc.data().values.toString());
-    }
-
-
-    
-  CollectionReference ref  =  FirebaseFirestore.instance.collection(gender);
-  QuerySnapshot users = await ref.get();
-
-  List<String> userIds = [];
-    for(DocumentSnapshot doc in users.docs){
-
-      if(!encountered_ids.containsKey('(' + doc.get('id') + ')')) {
-
-        userIds.add(doc.get('id'));
-      }
-    }
-
-    CollectionReference ref1 = FirebaseFirestore.instance.collection('users');
-   // QuerySnapshot users1 = await ref1.get();
-
-
-  for (String id in userIds) {
-    DocumentSnapshot document = await ref1.doc(id).get();
-    //print(document.id);
-    CollectionReference profile = document.reference.collection('profile');
-    var required = await profile.doc('required').get();
-    var img = await profile.doc('images').get();
-
-    var days = DateTime.now().difference(required.get('dob').toDate()).inDays;
+  //print(appUser.encountered_ids?.length);
+  //if(appUser.top3.length == 3)
+    while(i < 3){
+      UserOptions option = appUser.top3[i];
+    var days = DateTime.now().difference(option.required['dob'].toDate()).inDays;
     var age = days ~/360;
-    //print(img.get('Img 1'));
+    print(appUser.top3);
     draggableItems.add(
-         Profile(
-          id: required.get('id'),
-          name: required.get('name'),
-          image1: (img.get('Img 1')),
-          image2: img.get('Img 2'),
+        Profile(
+          option: option,
+          id: option.id,
+          name: option.required['name'],
+          image1: option.image_infos![0],
+          image2: option.image_infos![2],
           age: '$age',
-          sex: required.get('gender'),
-          genderpref: required.get('gender_pref'),
-           major: required.get('major'),
-
+          sex: option.required['gender'],
+          genderpref: option.required['gender_pref'],
+          major: option.required['major'],
+          match: option.match
         )
     );
+
+    i++;
+     // await appUser.update_option();
+      print(appUser.top3);
   }
+
   return draggableItems;
   }
 
   encountered(Profile profile, Swipe swipe) async {
-    User? currentUser = await FirebaseAuth.instance.currentUser;
-    String? email = currentUser?.email;
-    var match = RegExp('([a-z]+)').firstMatch(email!);
-    String? userId = match?.group(0);
 
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId!).collection('encountered').doc(profile.id)
-        .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+
+    appUser.update_encountered(profile.id);
 
     if(swipe == Swipe.down){
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId!).collection('left').doc(profile.id)
-          .set({'id' : profile.id.trim()}, SetOptions(merge: true));
+      appUser.update_left(profile.id);
+      //profile.image1.image.evict();
+      profile.option.evict_images();
+
+
     }else{
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId!).collection('right').doc(profile.id)
-          .set({'id' : profile.id.trim()}, SetOptions(merge: true));
 
-      var  right_data = await FirebaseFirestore.instance
-                    .collection('users').doc(profile.id).collection('right');
+      appUser.update_right(profile.id);
 
-      QuerySnapshot<Map<String, dynamic>> right_doc = await right_data.get();
-      /*
-    TODO
-    make it more efficient.
-    right now it is copying the elements into a hashmap and then checking
-     */
-      for(var doc in right_doc.docs){
-        if(doc.data().values.toString() == '('+userId+')'){
-          print("its a match");
+        if(profile.match){
+          print('its a match');
 
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userId!).collection('match').doc(profile.id)
-              .set({'id' : profile.id.trim()}, SetOptions(merge: true));
-
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(userId!).collection('chat').doc( userId + '&'+ profile.id)
-              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
+          appUser.update_match(profile.id);
 
 
+          if(mounted)
+          Navigator.push(
+            context,
+            new MaterialPageRoute(
+              /**
+               * TODO: Change myUSerId photo path
+               */
+              builder: (context) => new MatchedScreen(myProfilePhotoPath: profile.image2,
+                  myUserId: appUser.id!,
+                  otherUserProfilePhotoPath: profile.image1,
+                  otherUserId: profile.id),
+            ),
+          );
 
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(profile.id).collection('match').doc(userId)
-              .set({'id' : userId.trim()}, SetOptions(merge: true));
+          if(appUser.id.compareTo(profile.id) < 0)
+            await FirebaseFirestore.instance
+                .collection('chats')
+                .doc(appUser.id! + '&'+ profile.id)
+                .set({'id' : appUser.id! + '&'+ profile.id.trim()}, SetOptions(merge: true));
 
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(profile.id).collection('chat').doc( userId + '&'+ profile.id)
-              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
+          else
+            await FirebaseFirestore.instance
+                .collection('chats')
+                .doc(profile.id + '&'+ appUser.id)
+                .set({'id' : profile.id! + '&'+ appUser.id.trim()}, SetOptions(merge: true));
 
-          await FirebaseFirestore.instance
-              .collection('chats')
-              .doc(userId + '&'+ profile.id)
-              .set({'id' : userId + '&'+ profile.id.trim()}, SetOptions(merge: true));
-
-          break;
         }
-      }
+
     }
 
+    UserOptions option = await appUser.update_option();
+
+    setState(() {
+      var days = DateTime.now().difference(option.required['dob'].toDate()).inDays;
+      var age = days ~/360;
+      print(appUser.top3);
+      draggableItems.add(
+          Profile(
+            option: option,
+              id: option.id,
+              name: option.required['name'],
+              image1: option.image_infos![0],
+              image2: option.image_infos![1],
+              age: '$age',
+              sex: option.required['gender'],
+              genderpref: option.required['gender_pref'],
+              major: option.required['major'],
+              match: option.match
+          )
+      );
+    });
 
   }
 
@@ -607,7 +576,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     );
      initialize().then((value) {
        setState(() {
-          //draggableItems = value;
+          draggableItems = value;
        });
      });
     _animationController.addStatusListener((status) {
@@ -675,8 +644,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                         ),
                       ),
                       child: DragWidget(
-                        profile: draggableItems[index],
-                        index: index,
+                        profile: draggableItems[0],
+                        index: 0,
                         swipeNotifier: swipeNotifier,
                         isLastCard: true,
                       ),
@@ -684,8 +653,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                   );
                 } else {
                   return DragWidget(
-                    profile: draggableItems[index],
-                    index: index,
+                    profile: draggableItems[0],
+                    index: 0,
                     swipeNotifier: swipeNotifier,
                   );
                 }

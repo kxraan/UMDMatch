@@ -6,14 +6,35 @@ import 'package:lib/screens/widgets/header.dart';
 import 'package:lib/screens/registration/name.dart';
 import 'package:lib/screens/widgets/splash.dart';
 import 'package:provider/provider.dart';
-
+import '../database/app_user.dart';
 import 'home.dart';
 import 'authentication/auth.dart';
 import 'authentication/signOut.dart';
 import 'widgets/nav_bar.dart';
 
-class Wrapper extends StatelessWidget {
-  const Wrapper({Key? key}) : super(key: key);
+class Wrapper extends StatefulWidget{
+  const  Wrapper({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _Wrapper();
+}
+
+class _Wrapper extends State<Wrapper> {
+
+  late Future<bool> checkRegisterFuture;
+  late Future<void> appUserInitializeFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize AppUser and check_register futures
+    print('is this one?');
+    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+    appUserInitializeFuture = appUser.initialize();
+    checkRegisterFuture = check_register();
+  }
+
 
   Future<bool> check_register() async {
     User? currentUser = await FirebaseAuth.instance.currentUser;
@@ -41,28 +62,31 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context)  {
 
     final user = Provider.of<user_data?>(context);
+   // final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+
 
     if(user == null) {
       return SignIn();
     } else {
       if(FirebaseAuth.instance.currentUser!.email!.endsWith('terpmail.umd.edu')){
         AsyncSnapshot<bool> flag;
-       return FutureBuilder<bool>(
-           future: check_register(),
-           builder:(context, flag) {
-             if (flag.hasData) {
-               if (flag.data == true) {
-                 return NavBar();//Home()  ;
+       return FutureBuilder(
+           future: Future.wait([
+             checkRegisterFuture, appUserInitializeFuture
+           ]),
+           builder:(context, AsyncSnapshot<List<dynamic>> snapshot) {
+             if (snapshot.connectionState == ConnectionState.waiting) {
+               return SplashScreen(); // Show loading indicator while waiting
+             }
+             else  {
+
+               if (snapshot.data?[0] == true) {
+                 //initialize();
+                 return NavBar(); //Home()  ;
                } else {
                  //print("here--------------------------");
                  return Name();
                }
-             }else{
-               /*TODO
-                    Create a laoding page !!!!
-                */
-               return SplashScreen();
-
              }
            });
 
@@ -73,4 +97,6 @@ class Wrapper extends StatelessWidget {
     }
 
   }
+
+
 }

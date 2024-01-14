@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:lib/screens/wrapper.dart';
 import 'package:video_player/video_player.dart';
 
 import '../authentication/sign_in.dart';
+import '../wrapper.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -21,15 +21,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
     _controller = VideoPlayerController.asset('assets/UMDMatchfinal.mp4')
 
-    ..initialize().then((_SplashScreenState) {
+    ..initialize().then((_) {
       setState(() {
 
       });
     })
     ..setVolume(0.0);
 
-    _playVideo();
+    //_playVideo();
+    _controller.play();
     Timer(Duration(seconds: 5),(){
+      if(mounted)
       Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => Wrapper(),));
     });
   }
@@ -55,18 +57,6 @@ class _SplashScreenState extends State<SplashScreen> {
         : Container(),
 
       ),
-      // body: Container(
-      //   color: Colors.redAccent,
-      //   child: Center(child: Text('UMD MATCH',style: TextStyle(
-      //     fontSize: 36,
-      //     fontWeight: FontWeight.bold,
-      //     color: Colors.white,
-      //
-      //   ),
-      //   ),
-      //   ),
-      //
-      // ),
     );
   }
 }
