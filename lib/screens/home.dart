@@ -516,7 +516,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
               builder: (context) => new MatchedScreen(myProfilePhotoPath: profile.image2,
                   myUserId: appUser.id!,
                   otherUserProfilePhotoPath: profile.image1,
-                  otherUserId: profile.id),
+                  otherUserId: profile.id,
+                  option: profile.option),
             ),
           );
 
