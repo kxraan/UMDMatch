@@ -78,14 +78,10 @@ class UserOptions{
     return completer.future;
   }
 
-
-
   @override
   String toString() {
     String ans = id + '\n';
     return ans;
   }
-
-
 
 }

@@ -28,6 +28,60 @@ class _ProfilePageState extends State<ProfilePage> {
   late String userName = "";
   late String userEmail = "";
   late String userImgUrl = "";
+  late Map<String,dynamic>? optional;
+
+  @override
+  void initState() {
+    super.initState();
+    // Access the 'optional' data using Provider
+    optional = Provider.of<AppUser>(context, listen: false).optional;
+  }
+  // Open the edit modal
+  Future<void> _openEditModal(BuildContext context, String key, dynamic value) async {
+    // Show your modal or navigate to a new page for editing
+    // For simplicity, let's use showDialog as a modal
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Edit $key"),
+          content: TextField(
+            // Use a text field for simplicity, you might want to use a more complex input form
+            controller: TextEditingController(text: value.toString()),
+            onChanged: (newValue) {
+              // Update the value when the user types
+              value = newValue;
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                // Save the updated value to the database and update the local map
+                _updateValueInDatabase(key, value);
+                Navigator.pop(context);
+              },
+              child: Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Update the value in the database and local map
+  void _updateValueInDatabase(String key, dynamic value) {
+    // Update the local map
+    setState(() {
+      optional![key] = value;
+    });
+  }
+
 
 /*
   Future<void> fetchUserInfo() async {
@@ -190,6 +244,38 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   child: Text("Edit Profile"),
                 ),
+                if (optional != null)
+                  Column(
+                    children: [
+                      Text(
+                        "Prompts",
+                      ),
+                      SizedBox(height:20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: optional!.entries.map((entry) {
+                          return Row(
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  "${entry.key}: ${entry.value}",
+                                  style: TextStyle(fontSize: 16),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              IconButton(
+                                  icon: Icon(Icons.keyboard_arrow_right_rounded),
+                                  onPressed:() {
+                                    _openEditModal(context, entry.key, entry.value);
+                                  },
+                              ),
+
+                            ],
+                          );
+                        }).toList(),
+                      )
+                    ],
+                  )
               ],
             ),
           ),

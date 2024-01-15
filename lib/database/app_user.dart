@@ -24,7 +24,6 @@ class AppUser extends ChangeNotifier {
 
     print('before');
 
-
     if(_initialized) return;
 
     this.id = (await _fb.getUserId())!;

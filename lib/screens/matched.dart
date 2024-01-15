@@ -7,6 +7,7 @@ import '../database/app_user.dart';
 import 'chat.dart';
 
 class MatchedScreen extends StatelessWidget {
+
   static const String id = '/matched_screen';
 
   final ImageInfo myProfilePhotoPath;
@@ -15,6 +16,7 @@ class MatchedScreen extends StatelessWidget {
   final String otherUserId;
 
   MatchedScreen(
+
       {required this.myProfilePhotoPath,
         required this.myUserId,
         required this.otherUserProfilePhotoPath,
@@ -27,6 +29,7 @@ class MatchedScreen extends StatelessWidget {
     /**
      * TODO: chat gets added in moth the user only if 'send message' is selected
      */
+
     await appUser.start_chat(this.otherUserId);
 
     Navigator.pop(context);
