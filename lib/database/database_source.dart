@@ -27,6 +27,10 @@ class FirebaseDatabase{
     return instance.collection('users').doc(userId).collection('profile').doc('optional').get();
   }
 
+  get_prompts(String? userId) {
+    return instance.collection('users').doc(userId).collection('profile').doc('prompts').get();
+  }
+
   get_images(String? userId) {
     return instance.collection('users').doc(userId).collection('profile').doc('images').get();
   }

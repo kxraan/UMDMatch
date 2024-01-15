@@ -28,13 +28,13 @@ class _ProfilePageState extends State<ProfilePage> {
   late String userName = "";
   late String userEmail = "";
   late String userImgUrl = "";
-  late Map<String,dynamic>? optional;
+  late Map<String,dynamic>? prompts;
 
   @override
   void initState() {
     super.initState();
     // Access the 'optional' data using Provider
-    optional = Provider.of<AppUser>(context, listen: false).optional;
+    prompts = Provider.of<AppUser>(context, listen: false).prompts;
   }
   // Open the edit modal
   Future<void> _openEditModal(BuildContext context, String key, dynamic value) async {
@@ -78,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void _updateValueInDatabase(String key, dynamic value) {
     // Update the local map
     setState(() {
-      optional![key] = value;
+      prompts![key] = value;
     });
   }
 
@@ -244,7 +244,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   child: Text("Edit Profile"),
                 ),
-                if (optional != null)
+                if (prompts != null)
                   Column(
                     children: [
                       Text(
@@ -253,7 +253,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       SizedBox(height:20),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: optional!.entries.map((entry) {
+                        children: prompts!.entries.map((entry) {
                           return Row(
                             children: [
                               Flexible(

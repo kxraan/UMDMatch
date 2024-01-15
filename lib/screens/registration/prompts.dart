@@ -25,7 +25,7 @@ class _PromptsState extends State<Prompts> {
     try {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userId).collection('profile').doc('optional')
+          .doc(userId).collection('profile').doc('prompts')
           .set({ promptQues: prompt.trim()}, SetOptions(merge: true));
       print('User prompts stored successfully.');
     } catch (error) {

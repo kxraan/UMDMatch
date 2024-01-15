@@ -10,6 +10,7 @@ class AppUser extends ChangeNotifier {
   Map<String, dynamic>? required;
   Map<String, dynamic>? images;
   Map<String, dynamic>? optional;
+  Map<String, dynamic>? prompts;
   List <String>? matches;
   Map <String, String>? encountered_ids ;
   QuerySnapshot? preferred_genders;
@@ -33,6 +34,7 @@ class AppUser extends ChangeNotifier {
           _fb.get_required(this.id),
           _fb.get_images(this.id),
           _fb.get_optional(this.id),
+          _fb.get_prompts(this.id),
           _fb.get_matches(this.id),
           _fb.get_encountered(this.id)
         ];
