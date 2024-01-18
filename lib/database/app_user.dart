@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lib/database/user_options.dart';
-
+import 'package:lib/screens/widgets/constants.dart';
+import 'package:provider/provider.dart';
 import 'database_source.dart';
-
 class AppUser extends ChangeNotifier {
 
   String id ='';
@@ -16,17 +17,16 @@ class AppUser extends ChangeNotifier {
   QuerySnapshot? preferred_genders;
   List<String>? option_ids =[];
   List<UserOptions> top3 =[];
-
-
+  String userId = '';
   FirebaseDatabase _fb = new FirebaseDatabase();
   bool _initialized = false;
+
 
   Future<void> initialize() async {
 
     print('before');
 
     if(_initialized) return;
-
     this.id = (await _fb.getUserId())!;
     print('one');
       try {
@@ -47,8 +47,9 @@ class AppUser extends ChangeNotifier {
         this.required = results[0].data();
         this.images = results[1].data();
         this.optional = results[2].data();
-        this.matches = results[3];
-        this.encountered_ids = results[4];
+        this.prompts = results[3].data();
+        this.matches = results[4];
+        this.encountered_ids = results[5];
 
         // Now handle the preferred_genders, which depends on `required`
         this.preferred_genders = await _fb.get_preferred_gender(required?['gender_pref']);
@@ -58,11 +59,44 @@ class AppUser extends ChangeNotifier {
       } catch (e) {
         print(e.toString());
       }
+  }
 
+  Future<void> updatePrompts(Map<String, dynamic> newPrompts, String key) async {
+      // Assuming you have a reference to the Firestore collection
+      print('HELLO2');
+      print(newPrompts);
+      print(id);
+      //print(userID);
+      List<String> keys = newPrompts.keys.toList();
+      for (String i in keys) {
+        try{
+          print('HELLO3');
+          print(i);
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(id).collection('profile').doc('prompts')// Assuming id is the user's unique identifier
+              .set({key: newPrompts[key].trim()}, SetOptions(merge: true));
+        } catch (e) {
+          print('Error updating prompts: $e');
+        }
+      }
 
   }
 
-
+  // Future<void> updatePrompts(Map<String, dynamic> newPrompts) async {
+  //   try {
+  //     await FirebaseDatabase().instance
+  //         .collection('users')
+  //         .doc(userId)
+  //         .collection('profile')
+  //         .doc('prompts')
+  //         .set(newPrompts, SetOptions(merge: true));
+  //     prompts = newPrompts; // Update local state
+  //     notifyListeners();// Notify listeners to update the UI
+  //   } catch (e) {
+  //     print('Error updating prompts: $e');
+  //   }
+  // }
   get_option_ids(){
 
       for(DocumentSnapshot doc in preferred_genders!.docs){

@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lib/screens/widgets/constants.dart';
 import 'package:provider/provider.dart';
 
 import '../database/app_user.dart';
+import '../database/database_source.dart';
 
 void main() {
   runApp(MyApp());
@@ -29,14 +31,42 @@ class _ProfilePageState extends State<ProfilePage> {
   late String userEmail = "";
   late String userImgUrl = "";
   late Map<String,dynamic>? prompts;
+  late AppUser appUser;
+
 
   @override
   void initState() {
     super.initState();
     // Access the 'optional' data using Provider
+    appUser = Provider.of<AppUser>(context, listen: false);
     prompts = Provider.of<AppUser>(context, listen: false).prompts;
+
   }
-  // Open the edit modal
+
+
+  Future<void> fetchDataFromFirestore() async {
+    try {
+      // Replace the following lines with the actual code to fetch data from Firestore
+      // For example, if prompts are stored in a 'prompts' collection, you might do:
+      print('VIBHU');
+      print(userId);
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('profile')
+          .doc('prompts') // Adjust this path based on your Firestore structure
+          .get();
+
+      if (documentSnapshot.exists) {
+        // Update the local state with the fetched data
+        setState(() {
+          prompts = documentSnapshot.data() as Map<String, dynamic>?; // Adjust as per your data structure
+        });
+      }
+    } catch (e) {
+      print('Error fetching data from Firestore: $e');
+    }
+  }
   Future<void> _openEditModal(BuildContext context, String key, dynamic value) async {
     // Show your modal or navigate to a new page for editing
     // For simplicity, let's use showDialog as a modal
@@ -46,10 +76,8 @@ class _ProfilePageState extends State<ProfilePage> {
         return AlertDialog(
           title: Text("Edit $key"),
           content: TextField(
-            // Use a text field for simplicity, you might want to use a more complex input form
             controller: TextEditingController(text: value.toString()),
             onChanged: (newValue) {
-              // Update the value when the user types
               value = newValue;
             },
           ),
@@ -61,9 +89,22 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Text("Cancel"),
             ),
             TextButton(
-              onPressed: () {
-                // Save the updated value to the database and update the local map
-                _updateValueInDatabase(key, value);
+              onPressed: () async {
+                Map<String, dynamic> newPrompts = {...appUser.prompts!};
+                newPrompts[key] = value;
+                print("HELLO");
+                print(newPrompts);
+                // Update the prompts in the AppUser instance
+                await appUser.updatePrompts(newPrompts,key);
+
+                // Fetch the updated data from Firestore
+                await fetchDataFromFirestore();
+
+                // Rebuild the widget tree to reflect the changes
+                setState(() {
+                  prompts = appUser.prompts;
+                });
+
                 Navigator.pop(context);
               },
               child: Text("Save"),
@@ -74,13 +115,52 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Update the value in the database and local map
-  void _updateValueInDatabase(String key, dynamic value) {
-    // Update the local map
-    setState(() {
-      prompts![key] = value;
-    });
-  }
+
+  // Future<void> _openEditModal(BuildContext context, String key, dynamic value) async {
+  //   // Show your modal or navigate to a new page for editing
+  //   // For simplicity, let's use showDialog as a modal
+  //   await showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text("Edit $key"),
+  //         content: TextField(
+  //           // Use a text field for simplicity, you might want to use a more complex input form
+  //           controller: TextEditingController(text: value.toString()),
+  //           onChanged: (newValue) {
+  //             // Update the value when the user types
+  //             value = newValue;
+  //           },
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //               },
+  //             child: Text("Cancel"),
+  //           ),
+  //           TextButton(
+  //             onPressed: () async {
+  //               Map<String, dynamic> newPrompts = {...appUser.prompts!};
+  //               newPrompts[key] = value;
+  //
+  //               // Update the prompts in the AppUser instance
+  //               await appUser.updatePrompts(newPrompts);
+  //
+  //               // Rebuild the widget tree to reflect the changes
+  //               setState(() {
+  //                 prompts = newPrompts;
+  //               });
+  //
+  //               Navigator.pop(context);
+  //             },
+  //             child: Text("Save"),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
 
 /*
@@ -179,7 +259,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
 
-    final AppUser appUser = Provider.of<AppUser>(context, listen: false);
+    //final AppUser appUser = Provider.of<AppUser>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -251,8 +331,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         "Prompts",
                       ),
                       SizedBox(height:20),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                      Wrap(
                         children: prompts!.entries.map((entry) {
                           return Row(
                             children: [
@@ -260,7 +340,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: Text(
                                   "${entry.key}: ${entry.value}",
                                   style: TextStyle(fontSize: 16),
-                                  overflow: TextOverflow.ellipsis,
+                                  //overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               IconButton(
@@ -283,6 +363,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
 }
 
 class EditProfilePage extends StatefulWidget {
@@ -298,6 +379,7 @@ class EditProfilePage extends StatefulWidget {
 
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
+
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
